@@ -1,0 +1,1518 @@
+\documentclass{article}
+\usepackage[english]{babel}
+\usepackage{../lib/tex/naproche}
+
+\begin{document}
+
+
+\newcommand{\Prod}[3]{#1_{#2} \cdots #1_{#3}}
+\newcommand{\Seq}[2]{\{#1,\dots,#2\}}
+\newcommand{\FinSet}[3]{\{#1_{#2},\dots,#1_{#3}\}}
+\newcommand{\Primes}{\mathbb{P}}
+
+
+\title{Sets and Numbers - A readable and proof-checked $\mathbb{N}$aproche
+formalization,
+including some of Wiedijk's "100 Theorems"}
+
+\author{Peter Koepke, Mateusz Marcol and Patrick Schäfer}
+
+\maketitle
+
+\tableofcontents
+\newpage
+
+\section*{Introduction}
+
+The \Naproche{} system (for Natural Proof Checking)
+checks the logical correctness of texts
+written in an input language which ideally reads
+like common mathematical language. Proofs and their 
+structures should resemble the
+style of undergraduate textbooks. 
+This text serves several purposes: to demonstrate the 
+\Naproche{} concept including its
+input language ForTheL (for Formula Theory Language);
+to lay a logical and set-theoretical foundation for
+number systems in a standard build-up of mathematical notions
+with sets and classes, maps, relations and numbers;
+to prove several theorems from the well-known list of 100 theorems
+that F. Wiedijk has proposed as formalization benchmarks.
+ 
+Foundationally, the ordered field $\mathbb{R}$ of real numbers
+is postulated axiomatically. We then construe the structures of integer and
+rational numbers as substructures of $\mathbb{R}$:
+\[ \mathbb{R} \supseteq \mathbb{Q} \supseteq \mathbb{Z}
+\supseteq \mathbb{N}. \]
+This corresponds to the intuition of a continuous line of numbers with
+distinguished elements $0$ and $1$, from which integer and rational numbers can
+be constructed geometrically. Technically, this has the advantage 
+that the real addition and multiplication
+can be {\em restricted} to those substructures, instead of {\em extending} operations
+to larger superstructures.
+
+We see the present state of \Naproche{} and this paper as proof of 
+concept for interactive theorem
+proving with natural formalizations. To extend \Naproche{} to a powerful comprehensive
+system like Mizar or Isabelle is in principle possible, given sufficient resources.
+We think, however, that it is more promising to equip big existing
+system with a natural language interface by adapting 
+\Naproche's translation techniques
+from natural language texts into the formal logics of those systems.
+
+\section{Basic Ideas}
+
+The natural proof assistant \Naproche is intended to
+approximate and support ordinary mathematical practices.
+\Naproche employs the controlled natural language ForTheL
+as its input language. Some ForTheL notions are already
+built into \Naproche, as well as some basic properties of
+these notions.
+There are
+mathematical objects, and sets and classes of mathematical
+objects. Sets are classes which are objects themselves and
+can thus be used in further mathematical constructions. Functions
+and maps map objects to objects, where functions are those
+maps which are themselves objects.
+
+Modelling mathematical notions by objects corresponds
+to the intuition that numbers, points, etc. should
+not have internal set-theoretical
+structurings, contrary to purely set-theoretical
+foundations of mathematics. This is also advantageous
+for automated proving since it prevents proof searches to
+dig into mathematically irrelevant internal structurings.
+
+As in common mathematics, sets and functions are required to
+satisfy separation and replacement properties known from the
+set theories of Kelley-Morse or Zermelo-Fraenkel.
+
+The ontology presented here is more hierarchical than
+ad-hoc first-order axiomatizations in some previous
+\Naproche formalizations. Sometimes
+this results in more complex and longer ontological checking tasks.
+Controlling the complexitiy of automated proofs will be a major
+issue for the further development.
+
+
+\section{Importing Some Mathematical Language}
+
+We import singular/plural forms of words that will be used in
+our formalizations (\path{examples/vocabulary.ftl.tex}).
+In the long run this should be replaced by
+employing a proper English vocabulary. We also
+import some alternative formulations for
+useful mathematical phrases (\path{examples/macros.ftl.tex}).
+
+\begin{forthel}
+  [readtex \path{axioms.ftl.tex}]
+
+  [readtex \path{vocabulary.ftl.tex}]
+
+  [readtex \path{macros.ftl.tex}]
+\end{forthel}
+
+
+\section{Sets and Classes}
+
+The notions of \textit{classes} and \textit{sets} are already
+provided by \Naproche. Classes are usually defined by
+abstraction terms $\{ ... \mid ... \}$. Since such terms need to be
+processed by the parser we cannot introduce them simply by first-order
+definitions but have to implement them in the software.
+That sets are classes which are objects, or extensionality can be proved
+from inbuilt assumptions, but it is important to reprove or restate such
+facts so that they can directly be accessed by the ATP.
+
+\begin{forthel}
+  Let $S, T$ denote classes.
+
+  \begin{definition}
+    The empty set is the set that has no elements.
+  \end{definition}
+
+  \begin{definition}
+    A subclass of $S$ is a class $T$ such that every $x \in T$ belongs to $S$.
+  \end{definition}
+
+  Let $T \subseteq S$ stand for $T$ is a subclass of $S$.
+
+  Let a proper subclass of $S$ stand for a subclass $T$ of $S$ such that $T \neq
+  S$.
+
+  \begin{lemma}[Class Extensionality]
+    If $S$ is a subclass of $T$ and $T$ is a subclass of $S$ then $S = T$.
+  \end{lemma}
+
+  \begin{definition}
+    A subset of $S$ is a set $X$ such that $X \subseteq S$.
+  \end{definition}
+
+  Let a proper subset of $S$ stand for a subset $X$ of $S$ such that $X \neq S$.
+
+  \begin{axiom}[Separation Axiom]
+    Assume that $X$ is a set.
+    Let $T$ be a subclass of $X$.
+    Then $T$ is a set.
+  \end{axiom}
+
+  \begin{definition}
+    The intersection of $S$ and $T$ is $\class{x \in S | x \in T}$.
+  \end{definition}
+
+  Let $S \cap T$ stand for the intersection of $S$ and $T$.
+
+  \begin{definition}
+    The union of $S$ and $T$ is $\class{x | x \in S \vee x \in T}$.
+  \end{definition}
+
+  Let $S \cup T$ stand for the union of $S$ and $T$.
+
+  \begin{definition}
+    The set difference of $S$ and $T$ is $\class{x \in S | x \notin T}$.
+  \end{definition}
+
+  Let $S \setminus T$ stand for the set difference of $S$ and $T$.
+
+  \begin{definition}
+    $S$ is disjoint from $T$ iff there is no element of $S$ that is an element
+    of $T$.
+  \end{definition}
+
+  \begin{definition}
+    A family is a set $F$ such that every element of $F$ is a set.
+  \end{definition}
+
+  \begin{definition}
+    A disjoint family is a family $F$ such that $X$ is disjoint from $Y$ for all
+    nonequal elements $X, Y$ of $F$.
+  \end{definition}
+\end{forthel}
+
+
+\section{Pairs and Products}
+
+Since we prefer objects over sets if possible, we do not work
+with Kuratowski-style set-theoretical ordered pairs, but
+axiomatize them as objects.
+
+\begin{forthel}
+  \begin{axiom}
+    For any objects $a, b, c, d$ if $(a,b) = (c,d)$ then $a = c$ and $b = d$.
+  \end{axiom}
+
+  \begin{definition}
+    $S \times T = \class{(x,y) | \text{$x \in S$ and $y \in T$}}$.
+  \end{definition}
+
+  \begin{axiom}
+    Let $X, Y$ be sets.
+    Then $X \times Y$ is a set.
+  \end{axiom}
+
+  \begin{lemma}
+    Let $x, y$ be objects.
+    If $(x,y)$ is an element of $S \times T$ then $x$ is an element of $S$ and
+    $y$ is an element of $T$.
+  \end{lemma}
+\end{forthel}
+
+
+\section{Functions and Maps}
+
+The treatment of functions and maps is similar to that
+of sets and classes.
+
+\begin{forthel}
+  Let $f$ stand for a map.
+
+  \begin{axiom}
+    Assume that $\dom(f)$ is a set and $f(x)$ is an object for any
+    $x \in \dom(f)$.
+    Then $f$ is a function.
+  \end{axiom}
+
+  \begin{definition}
+    Assume $S$ is a subclass of the domain of $f$.
+    $f[S] = \class{f(x) | x \in S}$.
+  \end{definition}
+
+  Let the image of $f$ stand for $f[\dom(f)]$.
+
+  \begin{definition}
+    $f$ maps elements of $S$ to elements of $T$ iff $\dom(f) = S$ and $f[S]
+    \subseteq T$.
+  \end{definition}
+
+  Let $f : S \rightarrow T$ stand for $f$ maps elements of $S$ to elements of
+  $T$.
+
+  \begin{axiom}[Replacement Axiom]
+    Let $X$ be a set.
+    Assume that $X$ is a subset of the domain of $f$.
+    Then $f[X]$ is a set.
+  \end{axiom}
+
+  Let $g$ retracts $f$ stand for $g(f(x)) = x$ for all elements $x$ of
+  $\dom(f)$.
+  Let $h$ sections $f$ stand for $f(h(y)) = y$ for all elements $y$ of
+  $\dom(h)$.
+
+  \begin{definition}
+    $f : S \leftrightarrow T$ iff $f : S \rightarrow T$ and there exists a map
+    $g$ such that $g : T \rightarrow S$ and $g$ retracts $f$ and $g$ sections
+    $f$.
+  \end{definition}
+
+Let $A,B$ stand for sets.
+Let $x$ is in $A$ denote $x$ is an element of $A$.
+
+\begin{definition}[1 3]
+$A$ is nonempty iff $A$ has an element.
+\end{definition}
+
+\end{forthel}
+
+\section{* Cantor's Theorem}
+
+In this document we give a proof of Cantor's Theorem:
+
+  \begin{theorem*}
+    There is no surjection from a set onto its powerset.
+  \end{theorem*}
+
+  We need to provide certain definitions concerning surjective
+  functions and the notion of powerset.
+
+    \begin{definition*}
+      Let $X$ be a set.
+      A function of $X$ is a function $f$ such that $\dom(f) = X$.
+    \end{definition*}
+
+    \begin{definition*}
+      Let $f$ be a function and $Y$ be a set.
+      $f$ surjects onto $Y$ iff $Y = \class{f(x) | x \in \dom(f)}$.
+    \end{definition*}
+
+    Let a surjective function from $X$ to $Y$ stand for a function of $X$ that
+    surjects onto $Y$.
+
+    \begin{definition*}
+      Let $X$ be a set.
+      The powerset of $X$ is the collection of subsets of $X$.
+    \end{definition*}
+
+    \begin{axiom*}
+      The powerset of any set is a set.
+    \end{axiom*}
+
+  On this basis Cantor's theorem and its proof can be formalized as follows.
+
+    \begin{theorem*}[Cantor]
+      Let $M$ be a set.
+      No function of $M$ surjects onto the powerset of $M$.
+    \end{theorem*}
+    \begin{proof}
+      Assume the contrary.
+      Take a surjective function $f$ from $M$ to the powerset of $M$.
+      The value of $f$ at any element of $M$ is a set.
+      Define \[ N = \class{x \in M | \text{$x$ is not an element of $f(x)$}}. \]
+      $N$ is a subset of $M$.
+      Consider an element $z$ of $M$ such that $f(z) = N$.
+      Then \[ z \in N \iff z \notin f(z) = N. \]
+      Contradiction.
+    \end{proof}
+
+
+\section{The Real Field}
+
+\begin{forthel}
+[synonym number/-s]
+
+\begin{signature}
+A real number is a mathematical object.
+\end{signature}
+
+\begin{definition}
+$\mathbb{R}$ is the collection of real numbers.
+\end{definition}
+Let $x,y,z,w$ denote real numbers.
+
+\begin{axiom}
+$\mathbb{R}$ is a set.
+\end{axiom}
+
+
+\begin{signature}[1 12 A1]
+$x + y$ is a real number.
+\end{signature}
+Let the sum of $x$ and $y$ stand for $x + y$.
+
+\begin{signature}[1 12 M1]
+$x \cdot y$ is a real number.
+\end{signature}
+Let the product of $x$ and $y$ denote $x \cdot y$.
+
+\begin{signature}[1 5]
+$x < y$ is an atom.
+\end{signature}
+Let $x > y$ stand for $y < x$.
+Let $x \leq y$ stand for $x < y \vee x = y$.
+Let $x \geq y$ stand for $y \leq x$.
+
+\begin{axiom}[1 5 i]
+$(x < y \wedge x \neq y) \wedge not y < x$
+or $not x < y \wedge x = y \wedge not y < x$
+or $not x < y \wedge x \neq y \wedge y < x$.
+\end{axiom}
+
+\begin{axiom}[1 5 ii]
+If $x < y$ and $y < z$ then $x < z$.
+\end{axiom}
+
+\begin{proposition}
+$x \leq y$ iff not $x > y$.
+\end{proposition}
+
+\begin{axiom}[1 12 A2]
+$x + y = y + x$.
+\end{axiom}
+
+\begin{axiom}[1 12 A3]
+$(x + y) + z = x + (y + z)$.
+\end{axiom}
+
+\begin{signature}[1 12 A4]
+$0$ is a real number such that
+for every real number $x$ $x + 0 = x$.
+\end{signature}
+
+\begin{signature}[1 12 A5]
+$-x$ is a real number such that $x + (-x) = 0$.
+\end{signature}
+
+\begin{axiom}[1 12 M2]
+$x \cdot y = y \cdot x$.
+\end{axiom}
+
+\begin{axiom}[1 12 M3]
+$((x \cdot y)) \cdot z = x \cdot (y \cdot z)$.
+\end{axiom}
+
+\begin{signature}[1 12 M4]
+$1$ is a real number such that $1 \neq 0$ and
+for every real number $x$ $1 \cdot x = x$.
+\end{signature}
+
+\begin{signature}[1 12 M5]
+Assume $x \neq 0$. $1/x$ is a real number
+such that $x \cdot (1/x) = 1$.
+\end{signature}
+
+Let $x$ is nonzero stand for $x \neq 0$.
+
+\begin{axiom}[1 12 D]
+$x \cdot (y + z) = (x \cdot y) + (x \cdot z)$.
+\end{axiom}
+
+\begin{proposition}[Dist1]
+$((y \cdot x)) + (z \cdot x) = (y + z) \cdot x$.
+\end{proposition}
+
+\begin{proposition}[1 14 a]
+If $x + y = x + z$ then $y = z$.
+\end{proposition}
+\begin{proof}
+Assume $x + y = x + z$.
+Then \[ y = (-x+x) + y = -x + (x+y) = -x + (x+z) = (-x+x) + z = z. \]
+\end{proof}
+
+\begin{proposition}[1 14 b]
+If $x + y = x$ then $y = 0$.
+\end{proposition}
+
+\begin{proposition}[1 14 c]
+If $x + y = 0$ then $y = -x$.
+\end{proposition}
+
+\begin{proposition}[1 14 d]
+$-(-x) = x$.
+\end{proposition}
+
+
+\begin{proposition}[1 15 a]
+If $x$ is nonzero and $x \cdot y = x \cdot z$
+then $y = z$.
+\end{proposition}
+\begin{proof}
+Let $x$ be nonzero and $x \cdot y = x \cdot z$.
+\[ y = 1 \cdot y = ((1/x) \cdot x) \cdot y = (1/x) \cdot (x \cdot y) =
+(1/x) \cdot (x \cdot z) = ((1/x) \cdot x) \cdot z = 1 \cdot z = z. \]
+\end{proof}
+
+\begin{proposition}[1 15 b]
+If $x$ is nonzero and $x \cdot y = x$ then $y = 1$.
+\end{proposition}
+
+\begin{proposition}[1 15 c]
+If $x$ is nonzero and $x \cdot y = 1$ then $y = 1/x$.
+\end{proposition}
+
+\begin{proposition}[1 15 d]
+If $x$ is nonzero then $1/(1/x) = x$.
+\end{proposition}
+
+\begin{proposition}[1 16 a]
+$0 \cdot x = 0$.
+\end{proposition}
+
+\begin{proposition}[1 16 b]
+If $x$ is nonzero and $y \neq 0$ then $x \cdot y \neq 0$.
+\end{proposition}
+
+\begin{proposition}[1 16 c]
+$(-x) \cdot y = -(x \cdot y)$.
+\end{proposition}
+\begin{proof}
+$((x \cdot y)) + ((-x \cdot y)) = (x + (-x)) \cdot y
+= 0 \cdot y = 0$.
+\end{proof}
+
+\begin{proposition}
+$-x = -1 \cdot x$.
+\end{proposition}
+
+\begin{proposition}[1 16d]
+$(-x) \cdot (-y) = x \cdot y$.
+\end{proposition}
+\begin{proof}
+$(-x)\cdot (-y) = -(x\cdot(-y)) = -((-y)\cdot x) =
+-(-(y\cdot x)) = y\cdot x = x\cdot y$.
+\end{proof}
+
+Let $x - y$ stand for $x + (-y)$.
+Let $\frac{x}{y}$ stand for $x \cdot (1/y)$.
+
+\begin{lemma} Let $z \neq 0$. Then
+$x = \frac{z \cdot x}{z}$.
+\end{lemma}
+
+\begin{lemma}
+$(1 - x) \cdot y = y - (x \cdot y)$.
+\end{lemma}
+
+\begin{lemma} Let $w \neq 0$. Then
+$\frac{x - y}{w} + \frac{y - z}{w} = \frac{x - z}{w}$.
+\end{lemma}
+\begin{proof}
+$(x - y) + (y - z) = ((x - y) + y) - z = x - z$.
+\end{proof}
+
+\end{forthel}
+
+\section{Some Numbers}
+
+\begin{forthel}
+
+\begin{definition}
+$2 = 1 + 1$.
+\end{definition}
+
+\begin{definition}
+$3 = 2 + 1$.
+\end{definition}
+
+\begin{definition}
+$4 = 3 + 1$.
+\end{definition}
+
+\begin{definition}
+$5 = 4 + 1$.
+\end{definition}
+
+\begin{definition}
+$6 = 5 + 1$.
+\end{definition}
+
+\begin{definition}
+$7 = 6 + 1$.
+\end{definition}
+
+\begin{definition}
+$8 = 7 + 1$.
+\end{definition}
+
+\begin{definition}
+$9 = 8 + 1$.
+\end{definition}
+
+\begin{definition}
+$10 = 9 + 1$.
+\end{definition}
+\end{forthel}
+With these numbers we can prove some small "decimal arithmetic":
+\begin{forthel}
+
+\begin{lemma}
+$2 + 5 = 7$.
+\end{lemma}
+
+\begin{lemma}
+$2 \cdot 5 = 10$.
+\end{lemma}
+
+[dump on]
+
+\begin{lemma}
+$6 \cdot 4 = (2 \cdot 10) + 4$.
+\end{lemma}
+
+
+\end{forthel}
+
+\section{The Real Ordered Field}
+
+\begin{forthel}
+
+\begin{axiom}[1 17 i]
+If $y < z$ then $x + y < x + z$ and $y + x < z + x$.
+\end{axiom}
+
+\begin{axiom}[1 17 ii]
+If $x > 0$ and $y > 0$ then $x \cdot y > 0$.
+\end{axiom}
+
+\begin{definition}
+$x$ is positive iff $x > 0$.
+\end{definition}
+
+\begin{definition}
+$x$ is negative iff $x < 0$.
+\end{definition}
+
+\begin{definition}
+$x$ is nonnegative iff $x \geq 0$.
+\end{definition}
+
+
+\begin{proposition}[1 18 a]
+$x > 0$ iff $-x < 0$.
+\end{proposition}
+\begin{proof}
+If $x > 0$ then $0 = x + (-x) > 0 + (-x) = -x$.
+If $-x < 0$ then $0 = x + (-x) < x + 0 = x$.
+\end{proof}
+
+\begin{proposition}[1 18 b]
+If $x > 0$ and $y < z$ then
+$x \cdot y < x \cdot z$.
+\end{proposition}
+\begin{proof}
+Let $x > 0$ and $y < z$.
+$z - y > y - y = 0$.
+$x \cdot (z - y) > 0$.
+$x \cdot z = (x \cdot (z - y)) + (x \cdot y)$.
+$((x \cdot (z - y))) + (x \cdot y)  > 0 + (x \cdot y)$ (by 1 17i).
+$0 + (x \cdot y) = x \cdot y$.
+\end{proof}
+
+\begin{proposition}[1 18 bb]
+If $x > 0$ and $y < z$ then
+$y \cdot x < z \cdot x$.
+\end{proposition}
+
+
+\begin{proposition}[1 18 d]
+If $x \neq 0$ then $x \cdot x > 0$.
+\end{proposition}
+\begin{proof}
+Let $x \neq 0$.
+Case $x > 0$. Then thesis. end.
+Case $x < 0$. Then $ -x > 0$ and $x \cdot x = (-x) \cdot (-x) > 0$. end.
+\end{proof}
+
+\begin{proposition}[1 18 dd]
+$1 > 0$.
+\end{proposition}
+
+\begin{proposition}
+$x < y$ iff $-x > -y$.
+\end{proposition}
+\begin{proof}
+$x < y \iff x - y < 0$.
+$x - y < 0 \iff (-y) + x < 0$.
+$(-y) + x < 0 \iff (-y)+(-(-x)) < 0$.
+$(-y)+(-(-x)) < 0 \iff (-y)-(-x) < 0$.
+$(-y)-(-x) < 0 \iff -y < -x$.
+\end{proof}
+
+\begin{proposition}[1 18 c]
+If $x < 0$ and $y < z$ then
+$x \cdot y > x \cdot z$.
+\end{proposition}
+\begin{proof}
+Let $x < 0$ and $y < z$.
+$-x > 0$.
+$(-x)\cdot y < (-x)\cdot z$ (by 1 18b).
+$-(x\cdot y) < -(x\cdot z)$.
+\end{proof}
+
+\begin{proposition}[1 18 cc]
+If $x < 0$ and $y < z$ then
+$y \cdot x > z \cdot x$.
+\end{proposition}
+
+\begin{proposition}
+$-1 < 0$.
+\end{proposition}
+
+\begin{proposition}
+$x - 1 < x$.
+\end{proposition}
+\begin{proof}
+$x - 1 < x + 0 = x$.
+\end{proof}
+
+\begin{proposition}[1 18 e]
+If $0 < y$ then $0 < 1/y$.
+\end{proposition}
+
+\begin{proposition}[1 18 ee]
+Assume $0 < x < y$.
+Then $1/y < 1/x$.
+\end{proposition}
+\begin{proof}
+Case $1/x < 1/y$.
+Then
+\[ 1 = x \cdot (1/x) = (1/x) \cdot x < (1/x) \cdot y =
+y \cdot (1/x) < y \cdot (1/y) = 1. \]
+Contradiction. end.
+
+Case $1/x = 1/y$. Then
+\[ 1 = x \cdot (1/x) < y \cdot (1/y) = 1. \]
+Contradiction. end.
+
+Hence $1/y < 1/x$ (by 1 5 i).
+\end{proof}
+
+\end{forthel}
+
+
+\section{Upper and lower bounds}
+
+\begin{forthel}
+
+Let $E$ denote a subset of $\mathbb{R}$.
+
+\begin{definition}[1 7]
+An upper bound of $E$ is a
+real number $b$ such that for all elements $x$ of $E$ $x \leq b$.
+\end{definition}
+
+\begin{definition}[1 7a]
+$E$ is bounded above iff
+$E$ has an upper bound.
+\end{definition}
+
+\begin{definition}[1 7b]
+A lower bound of $E$ is a
+real number $b$ such that for all elements $x$ of $E$ $x \geq b$.
+\end{definition}
+
+\begin{definition}[1 7c]
+$E$ is bounded below iff
+$E$ has a lower bound.
+\end{definition}
+
+\begin{definition}[1 8]
+A least upper bound of $E$ is a real number $a$ such that
+$a$ is an upper bound of $E$ and for all $x$ if $x < a$ then $x$
+is not an upper bound of $E$.
+\end{definition}
+
+\begin{definition}[1 8a]
+Let $E$ be bounded below.
+A greatest lower bound of $E$ is a real number $a$ such that
+$a$ is a lower bound of $E$ and for all $x$ if $x > a$ then $x$ is
+not a lower bound of $E$.
+\end{definition}
+
+\begin{axiom}[1 19]
+Assume that $E$ is nonempty and bounded above.
+Then $E$ has a least upper bound.
+\end{axiom}
+
+\begin{definition}
+$E^- = \{-x \in \mathbb{R} \mid x \in E\}$.
+\end{definition}
+
+\begin{lemma}
+$E^-$ is a subset of $\mathbb{R}$.
+\end{lemma}
+
+\begin{lemma}
+$x$ is an upper bound of $E$ iff $-x$ is a lower bound of $E^-$.
+\end{lemma}
+
+\begin{theorem}[1 11] Assume that $E$ is a nonempty subset of $\mathbb{R}$
+such that $E$ is bounded below.
+Then $E$ has a greatest lower bound.\end{theorem}
+\begin{proof}
+Take a lower bound $a$ of $E$.
+$-a$ is an upper bound of $E^-$.
+Take a least upper bound $b$ of $E^-$.
+Let us show that $-b$ is a greatest lower bound of $E$.
+$-b$ is a lower bound of $E$. Let $c$ be a lower bound of $E$.
+Then $-c$ is an upper bound of $E^-$.
+end.
+\end{proof}
+
+\end{forthel}
+
+
+\section{The rational numbers}
+
+\begin{forthel}
+
+[synonym number/numbers]
+
+\begin{signature}[1 19a]
+A rational number is a real number.
+\end{signature}
+
+Let $p,q,r$ denote rational numbers.
+
+\begin{definition}
+$\mathbb{Q}$ is the collection of rational numbers.
+\end{definition}
+
+\begin{theorem}
+$\mathbb{Q}$ is a set.
+\end{theorem}
+\begin{proof}
+$\mathbb{Q}$ is a subset of $\mathbb{R}$.
+\end{proof}
+
+\end{forthel}
+
+
+Theorem 1.19 of \cite{Rudin} states that $\mathbb{Q}$ is a
+subfield of $\mathbb{R}$. We require this axiomatically.
+
+
+\begin{forthel}
+
+\begin{lemma}
+$\mathbb{Q} \subseteq \mathbb{R}$.
+\end{lemma}
+
+\begin{axiom}
+$p + q$, $p \cdot q$, $0$, $-p$, $1$ are rational numbers.
+\end{axiom}
+
+\begin{axiom}
+Assume $p \neq 0$.
+$1/p$ is a rational number.
+\end{axiom}
+
+\begin{axiom}
+There exists a subset $A$ of $\mathbb{Q}$
+such that $A$ is bounded above and
+$x$ is a least upper bound of $A$.
+\end{axiom}
+
+\begin{theorem}
+$\mathbb{R} = \{x \in \mathbb{R} \mid$ there exists $
+A \subseteq \mathbb{Q}$ such that $
+A$ is bounded above and $x$ is a least upper
+bound of $A\}$.
+\end{theorem}
+
+\end{forthel}
+
+
+\section{Integers}
+
+\begin{forthel}
+
+[synonym integer/-s]
+
+\begin{signature}
+An integer is a rational number.
+\end{signature}
+Let $a,b,i$ stand for integers.
+
+\begin{definition}
+$\mathbb{Z}$ is the collection of integers.
+\end{definition}
+
+
+\begin{theorem}
+$\mathbb{Z}$ is a subset of $\mathbb{R}$.
+\end{theorem}
+
+\end{forthel}
+
+
+$\mathbb{Z}$ is a discrete subring of $\mathbb{Q}$:
+
+
+\begin{forthel}
+
+\begin{axiom}
+$a + b$, $a \cdot b$, $0$, $-a$, $1$ are integers.
+\end{axiom}
+
+\begin{axiom}
+There is no integer $a$ such that $0 < a < 1$.
+\end{axiom}
+
+\begin{axiom}
+There exist $a$ and $b$ such that
+$a \neq 0 \wedge p = \frac{b}{a}$.
+\end{axiom}
+
+\begin{theorem}[Archimedes1]
+$\mathbb{Z}$ is not bounded above.
+\end{theorem}
+\begin{proof}
+Assume the contrary.
+$\mathbb{Z}$ is nonempty. Indeed $0$ is an integer.
+Take a least upper bound
+$b$ of $\mathbb{Z}$.
+Let us show that $b - 1$ is an upper bound of $\mathbb{Z}$.
+Let $x \in \mathbb{Z}$. $x + 1 \in \mathbb{Z}$.
+$x + 1 \leq b$.
+$x = (x + 1) - 1 \leq b - 1$.
+end.
+\end{proof}
+
+\begin{theorem}
+$\mathbb{Z}$ is not bounded below.
+\end{theorem}
+\begin{proof}
+Assume the contrary.
+Take a real number $x$ that is a lower bound of $\mathbb{Z}$.
+Then $-x$ is an upper bound of $\mathbb{Z}$.
+Contradiction.
+\end{proof}
+
+\begin{theorem}[Archimedes2]
+Let $x$ be a real number.
+Then there is an integer $a$
+such that $x < a$.\end{theorem}
+\begin{proof}[by contradiction]
+Assume the contrary.
+Then $x$ is an upper bound of $\mathbb{Z}$.
+Contradiction.
+\end{proof}
+
+
+\end{forthel}
+
+
+\section{Division}
+
+\begin{forthel}
+
+Let $l,m,n$ denote integers.
+
+\begin{definition}
+$n$ divides $m$ iff for some $l$ $m = n \cdot l$.
+\end{definition}
+
+Let $x | y$ denote $x$ divides $y$.
+Let a divisor of $x$ denote an integer that divides $x$.
+
+\begin{lemma}
+Assume $l | m | n$.
+Then $l | n$.
+\end{lemma}
+\begin{proof}
+Take integers $u,v$ such that $m = l \cdot u$ and $n = m \cdot v$.
+Then $n = l \cdot (u \cdot v)$.
+\end{proof}
+
+\begin{lemma}
+Let $l | m$ and $l | m + n$.
+Then $l | n$.
+\end{lemma}
+\begin{proof}
+Assume that $l$ is nonzero.
+Take an integer $p$ such that $m = l \cdot p$.
+Take an integer $q$ such that $m + n = l \cdot q$.
+Take $r = q - p$.
+We have $(l \cdot p) + (l \cdot r) = l \cdot q = m + n = (l \cdot p) + n$.
+Hence $n = l \cdot r$.
+\end{proof}
+
+
+
+\end{forthel}
+
+
+\section{The natural numbers}
+
+\begin{forthel}
+
+\begin{definition}
+A natural number is a nonnegative integer.
+\end{definition}
+
+\begin{definition}
+$\mathbb{N}$ is the collection
+of natural numbers.
+\end{definition}
+Let $l,m,n$ stand for natural numbers.
+
+\begin{lemma}
+$\mathbb{N}$ is a subset of $\mathbb{R}$.
+\end{lemma}
+
+\begin{lemma} Let $n$ be a natural number. Then
+$n = 0$ or $n = m + 1$ for some natural number $m$.
+\end{lemma}
+\begin{proof}
+Case $n = 0$. Trivial.
+$n \neq 0$. Let $m = n - 1$.
+$n = m + 1$. $m$ is nonnegative.
+\end{proof}
+
+%\begin{lemma} n=n. \end{lemma}
+
+\begin{lemma}
+$\mathbb{Z} = \mathbb{N}^- \cup \mathbb{N}$.
+\end{lemma}
+
+
+
+\begin{lemma}
+If $l + m = l + n$ or $m + l = n + l$ then $m = n$.
+\end{lemma}
+
+\begin{lemma}
+Assume that $l$ is nonzero.
+If $l \cdot m = l \cdot n$ or $m \cdot l = n \cdot l$ then $m = n$.
+\end{lemma}
+
+\begin{lemma}
+If $m + n = 0$ then $m = 0$ and $n = 0$.
+\end{lemma}
+
+\begin{lemma}
+Assume $m \leq n$. Then
+there exists a natural number $l$ such that $m + l = n$.
+\end{lemma}
+\begin{proof}
+$n - m$ is a natural number. $m + (n-m) = (n - m) + m = n$.
+\end{proof}
+
+\begin{lemma}
+Assume there exists a natural number $l$ such 
+that $m + l = n$. Then $m \leq n$.
+\end{lemma}
+
+\begin{lemma}
+For every natural number $n$ $n = 0$ or $1 \leq n$.
+\end{lemma}
+
+
+\begin{lemma}
+Let $m \neq 0$. Then $n \leq n \cdot m$.
+\end{lemma}
+\begin{proof}
+$1 \leq m$.
+\end{proof}
+
+Let $x$ is nontrivial stand for $x \neq 0$ and $x \neq 1$.
+
+\begin{definition}
+$n$ is prime iff $n$ is nontrivial and
+for every natural number $m$ that divides $n$ $m = 1$ or $m = n$.
+\end{definition}
+
+\end{forthel}
+
+\section{* The Principle of Mathematical Induction}
+
+\Naproche provides a special binary relation
+symbol $\prec$ for a universal inductive relation: if at any
+point $m$ property $P$ is inherited at $m$ provided all
+$\prec$-predecessors of $m$ satisfy $P$, then $P$ holds everywhere.
+Induction along $<$ is ensured by:
+
+
+\begin{forthel}
+
+\begin{theorem}[Induction Theorem]
+Assume $A \subseteq \mathbb{N}$
+and $0 \in A$ and for all $n \in A$ $n + 1 \in A$.
+Then $A = \mathbb{N}$.
+\end{theorem}
+
+\begin{proof}
+Let us show that every element of $\mathbb{N}$ is an element of $A$.
+	Let $n \in \mathbb{N}$.
+	Assume the contrary.
+	Define $F = \{  j \in \mathbb{N} \mid j \notin A\}$.
+	$F$ is nonempty. $F$ is bounded below.
+  Take a greatest lower bound $a$ of $F$.
+	Let us show that $a+1$ is a lower bound of $F$.
+		Let $x \in F$. $x - 1 \in \mathbb{Z}$.
+
+		Case $x - 1 < 0$. Then $0 < x < 1$. Contradiction. end.
+
+		Case $x - 1 = 0$. Then $x = 1$ and $1 \notin A$. Contradiction. end.
+
+		Case $x - 1 > 0$. Then $x - 1 \in \mathbb{N}$.
+      $x - 1 \notin A$. Indeed $(x - 1) + 1 = x \notin A$. $x - 1 \in F$.
+			$a \leq x - 1$.
+			$a + 1 \leq (x - 1) + 1 = x$.
+		end.
+	end.
+
+	Then $a+1 > a$.
+	Contradiction.
+end.
+\end{proof}
+
+Let $m$ is inductively smaller than $n$ stand for $m \prec n$.
+
+\begin{axiom} Let $m$ be a natural number. Then
+$m$ is inductively smaller than $m+1$.
+\end{axiom}
+
+\begin{axiom}
+If $n < m$ then $n \prec m$.
+\end{axiom}
+
+
+
+
+\begin{lemma}
+There is an integer $m$ such that
+$m -1 \leq x < m$.
+\end{lemma}
+\begin{proof}
+Assume the contrary.
+Then for all integers $m$ such that $x \geq m-1 $ we have $x \geq m$.
+Take an integer $n$ such that $n < x$. Indeed $x$ is not a lower bound of $\mathbb{Z}$.
+Define
+\[ A = \{i \in \mathbb{N} \mid n + (i - 1) \leq x\}. \]
+(1) $A = \mathbb{N}$.
+
+Proof.
+$A \subseteq \mathbb{N}$.
+$1 \in A$.
+
+For all $i \in A$ $i + 1 \in A$.
+
+  Proof. Let $i \in A$. Then
+  $n + (i -1) = (n + i) - 1 \leq x$ and
+  $n + ((i + 1) - 1) = n + i \leq x$.
+  Hence $i + 1 \in A$.
+  qed.
+
+qed.
+
+(2) $x + 1$ is an upper bound of $\mathbb{Z}$.
+
+Proof.
+Let $j$ be an integer. Let us show that $j \leq x + 1$.
+
+Case $j \leq n$. Then $j \leq x \leq x + 1$. Trivial.
+
+Then $j > n$. Take a positive integer $i$
+such that $j = n + i$. 
+Indeed $j - n$ is a positive integer and  
+$j = n + (j-n)$.
+$i \in A$.
+Hence $n + (i-1) \leq x$. $j = n+i = (n + (i-1)) + 1 \leq x + 1$.
+qed.
+
+qed.
+
+Contradiction.
+\end{proof}
+
+
+
+\end{forthel}
+
+\section{Exponentiation}
+
+\begin{forthel}
+Let $x$ denote real numbers.
+Let $i$ denote integers.
+
+\begin{signature} $x^{i}$ is a real number.
+\end{signature}
+
+\begin{axiom} $x^{0} = 1$. \end{axiom}
+
+\begin{axiom} If $i \geq 0$ then $x^{i+1} = x^{i} \cdot x$.
+\end{axiom}
+
+\begin{lemma}
+$x \cdot x^{m} = x^{m+1}$.
+\end{lemma}
+
+\end{forthel}
+
+\section{* Sum of a Geometric Series}
+
+\newcommand{\sumgeom}[2]{\sum_{0 \leq i < #2} {#1}^i}
+
+{\em Case construct in induction proof should have 
+"Otherwise" to denote the remaining case. Beautify the 
+[...] commands}
+
+We treat the partial sums $\sumgeom{x}{n}$ of a geometric
+series as a function in $x$ and $n$ which satisfies some
+recursive axioms:
+
+\begin{lemma} 0=0. \end{lemma}
+
+Let $x,y,z,w$ denote real numbers. 
+Let $m,n$ denote natural number.
+
+
+
+
+\begin{signature}
+$\sumgeom{x}{n}$ is a real number.
+\end{signature}
+
+\begin{axiom}
+$\sumgeom{x}{0} = 0$.
+\end{axiom}
+
+\begin{axiom} Let $x$ be a real number and $n$ be
+a natural number. Then 
+$\sumgeom{x}{n+1} = (\sumgeom{x}{n}) + x^{n}$.
+\end{axiom}
+
+[prover vampire]
+
+\begin{theorem} Let $x \neq 1$. Then
+$$\sumgeom{x}{n} = \frac{1 - x^{n}}{1 - x}$$
+for all natural numbers $n$.
+\end{theorem}
+\begin{proof}[by induction on $n$]
+
+$1 - x \neq 0$.
+
+Let $n$ be a natural number.
+
+Case $n = 0$. Trivial.
+
+Take a natural number $m$ such that $m + 1 = n$. 
+$m$ is inductively smaller than $m+1$ and
+$\sumgeom{x}{m} = \frac{1 - x^{m}}{1 - x}$.
+
+Then
+
+$\sumgeom{x}{n} =
+\frac{1 - x^{m}}{1 - x} + x^{m} = 
+\frac{1 - x^{m}}{1 - x} + \frac{(1-x)\cdot x^{m}}{1 - x} =
+\frac{1 - x^{m}}{1 - x} + \frac{x^{m}-(x \cdot x^{m})}{1 - x} =
+\frac{1 - x^{m}}{1 - x} + \frac{x^{m} - x^{n}}{1 - x} =
+\frac{1 - x^{n}}{1 - x}$.
+\end{proof}
+
+\section{* Sum of an Arithmetic Series}
+
+\newcommand{\sumarith}[3]{\sum_{i = 1}^{#3}(#1 + #2 \cdot i)}
+
+
+Let $a,d$ denote real numbers.
+
+\begin{signature}
+$\sumarith{a}{d}{n}$ is a real number.
+\end{signature}
+
+\begin{axiom}
+$\sumarith{a}{d}{1} = a + d$.
+\end{axiom}
+
+\begin{axiom}[1]
+$\sumarith{a}{d}{n+1} = \sumarith{a}{d}{n} + (a + (d \cdot (n + 1)))$.
+\end{axiom}
+
+
+
+\begin{theorem} For all natural numbers $n$
+$$\sumarith{a}{d}{n} = n \cdot ( a + \frac{(n + 1) \cdot d}{2}).$$
+\end{theorem}
+\begin{proof}[by induction on $n$]
+Let $n$ be a natural number.
+
+Case $n = 1$.
+Trivial.
+
+Take a natural number $m$ such that $m + 1 = n$. $m$ is inductively smaller than $n$.
+
+$$\sumarith{a}{d}{m} = m \cdot ( a + \frac{(m + 1) \cdot d}{2}).$$
+%
+Then
+$$\sumarith{a}{d}{n} = 
+(m \cdot ( a + \frac{(m + 1) \cdot d}{2})) + (a + (d \cdot (m + 1)))$$
+(by 1).
+
+Hence
+
+$\sumarith{a}{d}{n} =$
+
+$((m \cdot a) + (m \cdot \frac{n \cdot d}{2})) + (a + (d \cdot n)) =$
+
+$(((m \cdot a) + a) +  (m \cdot \frac{n \cdot d}{2})) + (d \cdot n) =$
+
+$(((m \cdot a) + (1 \cdot a)) +  (m \cdot \frac{n \cdot d}{2})) + (d \cdot n) =$
+
+$((n \cdot a) +  (m \cdot \frac{n \cdot d}{2})) + (d \cdot n)$.
+
+$((n \cdot a) +  (m \cdot \frac{n \cdot d}{2})) + (d \cdot n) =$
+
+$(n \cdot a) +  ((m \cdot \frac{n \cdot d}{2}) + (d \cdot n)) =$
+
+$(n \cdot a) +  ((m \cdot \frac{n \cdot d}{2}) + (2 \cdot \frac{n \cdot d}{2})) =$
+
+($n \cdot a) +  ((n+1) \cdot \frac{n \cdot d}{2}) =$
+
+$(n \cdot a) +  \frac{(n+1) \cdot (n \cdot d)}{2} =$
+
+$(n \cdot a) +  \frac{n \cdot ((n+1) \cdot d)}{2} =$
+
+$n \cdot ( a + \frac{(n + 1) \cdot d}{2})$.
+
+\end{proof}
+
+
+
+\section{* The Number of Subsets of a Set}
+
+
+\section{Finite Sequences and Products}
+
+\begin{forthel}
+[prover eprover]
+\begin{definition}
+$\Seq{m}{n}$ is the class of
+natural numbers $i$ such that $m \leq i \leq n$.
+\end{definition}
+
+\begin{axiom}
+$\Seq{m}{n}$ is a set.
+\end{axiom}
+
+\begin{axiom}
+Assume $F$ is a function and $x \in \dom(F)$.
+Then $F(x)$ is an object.
+\end{axiom}
+
+\begin{definition}
+A sequence of length $n$ is a
+function $F$ such that $\dom(F) = \Seq{1}{n}$.
+\end{definition}
+
+Let $F_{i}$ stand for $F(i)$.
+
+\begin{definition}
+Let $F$ be a sequence of length $n$.
+$\FinSet{F}{1}{n} = \{ F_{i} | i \in \dom(F)\}$.
+\end{definition}
+
+\begin{signature}
+Let $F$ be a sequence of length $n$
+such that $\FinSet{F}{1}{n} \subseteq \mathbb{N}$.
+$\Prod{F}{1}{n}$ is a natural number.
+\end{signature}
+
+\begin{axiom}[Factorproperty]
+Let $F$ be a sequence of length $n$
+such that $F(i)$ is a nonzero natural number for every $i \in \dom(F)$.
+Then $\Prod{F}{1}{n}$ is nonzero and
+$F(i)$ divides $\Prod{F}{1}{n}$ for every $i \in \dom(F)$.
+\end{axiom}
+
+\end{forthel}
+
+
+\section{Finite and Infinite Sets}
+
+\begin{forthel}
+
+Let $S$ denote a class.
+
+\begin{definition}
+$S$ is finite iff
+$S = \FinSet{s}{1}{n}$ for some natural number $n$ and some function $s$ that is
+a sequence of length $n$.
+\end{definition}
+
+\begin{definition}
+$S$ is infinite iff $S$ is not finite.
+\end{definition}
+
+\end{forthel}
+
+\section{* Greatest Common Divisor Algorithm}
+
+ 69. Greatest Common Divisor Algorithm
+egcd
+
+  |- egcd(m,n) = if m = 0 then n
+                 else if n = 0 then m
+                 else if m <= n then egcd(m,n - m)
+                 else egcd(m - n,n)
+
+EGCD
+
+  |- !a b. (egcd (a,b) divides a /\ egcd (a,b) divides b) /\
+           (!e. e divides a /\ e divides b ==> e divides egcd (a,b))
+
+
+\section{* Bezout's Theorem}
+
+\section{* The Irrationality of the Square Root of 2}
+
+
+    Let a prime number stand for a prime natural number.
+
+    Let $p$ denote a prime number.
+
+    \begin{definition}
+      $n$ and $m$ are coprime iff $n$ and $m$ have no common prime divisor.
+    \end{definition}
+
+    \begin{axiom}
+      There exist coprime integers $m,n$ such that $m \cdot q = n$.
+    \end{axiom}
+
+%    Let $q^{2}$ stand for $q \cdot q$.
+
+    \begin{proposition}
+      $q^{2} = p$ for no positive rational number $q$.
+    \end{proposition}
+    \begin{proof}[by contradiction]
+      Assume the contrary.
+      Take a positive rational number $q$ such that $p = q^{2}$.
+      Take coprime integers $m,n$ such that $m \cdot q = n$.
+      Then $p \cdot m^{2} = n^{2}$.
+      Therefore $p$ divides $n$.
+      Take a natural number $k$ such that $n = k \cdot p$.
+      Then $p \cdot m^{2} = p \cdot (k \cdot n)$.
+      Therefore $m \cdot m$ is equal to $p \cdot k^{2}$.
+      Hence $p$ divides $m$.
+      Contradiction.
+    \end{proof}
+
+
+\section{* The Infinitude of Primes}
+
+
+%\begin{lemma} 1 = 1. \end{lemma}
+
+%%%%%%Let $F_{i}$ stand for $F(i)$.
+
+\begin{lemma}
+Every nontrivial natural number $n$ has a divisor 
+that is a prime natural number.
+\end{lemma}
+\begin{proof}[by induction on $n$]
+Let $n$ be a nontrivial natural number. %Let $n$ be nontrivial.
+Case $n$ is prime. Trivial.
+Case $n$ is not prime.
+Take a natural number $m$ such that $m$ divides $n$ 
+and $m \neq 1$ and $m \neq n$. $m \leq n$.
+$m$ is inductively smaller than $n$. $m$ is nontrivial.
+Take a divisor $p$ of $m$ that is a prime natural number.
+Then $p$ is a prime divisor of $n$.
+end.
+\end{proof}
+
+
+\begin{signature}
+$\Primes$ is the collection of prime natural numbers.
+\end{signature}
+
+\begin{theorem}[Euclid]
+$\Primes$ is infinite.
+\end{theorem}
+\begin{proof}
+Assume that $r$ is a natural number and
+$p$ is a sequence of length $r$ and
+$\FinSet{p}{1}{r}$ is a subclass of $\Primes$.
+(1) $p_{i}$ is a nonzero natural number for every
+$i \in  \dom(p)$.
+Consider $n=\Prod{p}{1}{r}+1$.
+$\Prod{p}{1}{r}$ is nonzero (by Factorproperty).
+$n$ is nontrivial.
+Take a divisor $q$ of $n$ that is a prime natural number.
+Let us show that $q \neq p_{i}$ 
+for all natural numbers $i$ such that $1 \leq i \leq r$.
+
+Proof by contradiction.
+Assume that $q=p_{i}$ for some natural number $i$ such that
+$1 \leq i \leq r$.
+Take a natural number $i$ such that $1 \leq i \leq r$
+and $q=p_{i}$.
+$q$ is a divisor of $n$.
+$i \in \dom(p)$. $p_{i}$ is a divisor of $\Prod{p}{1}{r}$
+(by Factorproperty, 1).
+Thus $q$ divides $1$.
+Contradiction. qed.
+
+Hence $\FinSet{p}{1}{r}$ is not the class of prime natural numbers.
+\end{proof}
+
+
+\section{* The Denumerability of the Rational Numbers}
+
+\section{* The Non-Denumerability of the Continuum}
+
+\section{Archimedian properties}
+
+\begin{forthel}
+
+\begin{theorem}[1 20 a]
+Let $x > 0$.
+Then there is a
+positive integer $n$ such that \[ n \cdot x > y. \]
+\end{theorem}
+\begin{proof}
+Take an integer $a$ such that $a > \frac{y}{x}$.
+Take a positive integer $n$ such that $n > a$.
+$n > \frac{y}{x}$ and $n \cdot x > \frac{y}{x} \cdot x = y$.
+\end{proof}
+
+\begin{theorem}[1 20 b]
+Let $x < y$. Then there exists
+$p \in \mathbb{Q}$ such that $x < p < y$.
+\end{theorem}
+\begin{proof}
+We have $y - x > 0$.
+Take a positive integer $n$ such that
+$n\cdot (y-x) > 1$ (by 1 20 a).
+Take an integer $m$ such that
+\[ m -1 \leq n \cdot x < m. \]
+Then
+\[ n \cdot x < m = (m - 1) + 1 \leq (n\cdot x) + 1 <
+(n\cdot x) + (n\cdot (y-x)) = n \cdot (x + (y - x)) = n \cdot y. \]
+$n > 0$ and
+\[ x = \frac{n\cdot x}{n} < \frac{m}{n} < \frac{n\cdot y}{n} = y. \]
+Let $p = \frac{m}{n}$. Then $p \in \mathbb{Q}$ and $x < p < y$.
+\end{proof}
+
+\end{forthel}
+
+
+\begin{thebibliography}{plain}
+\bibitem{Wiedijk} 100 theorems
+\bibitem{Naproche} Website
+
+\bibitem{Rudin} Walter Rudin. \textit{Principles of Mathematical
+Analysis}.
+\end{thebibliography}
+
+\end{document}
