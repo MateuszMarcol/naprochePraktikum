@@ -82,23 +82,22 @@ $\bigcup U = \{x | x \in y$ for some $y \in U\}$.
       $y \subseteq h(y)$}}$.
       Then $A$ is a subset of $\pow(x)$ and
       $\bigcup A \in \pow(x)$.
-
-      Let us show that 
+ 
 
 (1) $\bigcup A \subseteq h(\bigcup A)$.
-        Let $u \in \bigcup A$.
+
+Proof.        Let $u \in \bigcup A$.
         Take $y \in A$ such that $u \in y$.
         Then $u \in h(y) \subseteq h(\bigcup A)$.
-        %We have $y \subseteq \bigcup A$.
-        %Hence $h(y) \subseteq h(\bigcup A)$.
-        %Thus $h(y) \subseteq h(\bigcup A)$.
-        %Therefore $u \in h(\bigcup A)$.
-      End.
+      qed.
 
-      $h(\bigcup A) \subseteq x$.
+(2) $h(\bigcup A) \subseteq \bigcup A$.
+
+Proof.      $h(\bigcup A) \subseteq x$.
 $h(\bigcup A) \subseteq h(h(\bigcup A))$.
 $h(\bigcup A) \in A$.
-(2) $h(\bigcup A) \subseteq \bigcup A$.
+Thus $h(\bigcup A) \subseteq \bigcup A$.
+qed.
 
 Then $\bigcup A$ is a fixed point of $h$ (by 1, 2).
     \end{proof}
