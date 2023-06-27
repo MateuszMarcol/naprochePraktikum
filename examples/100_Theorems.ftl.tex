@@ -4,13 +4,10 @@
 
 \begin{document}
 
-% TEST
-
 \newcommand{\Prod}[3]{#1_{#2} \cdots #1_{#3}}
 \newcommand{\Seq}[2]{\{#1,\dots,#2\}}
 \newcommand{\FinSet}[3]{\{#1_{#2},\dots,#1_{#3}\}}
 \newcommand{\Primes}{\mathbb{P}}
-
 
 \title{Sets and Numbers - A readable and proof-checked $\mathbb{N}$aproche
 formalization,
@@ -88,7 +85,7 @@ As in common mathematics, sets and functions are required to
 satisfy separation and replacement properties known from the
 set theories of Kelley-Morse or Zermelo-Fraenkel.
 
-The ontology presented here is more hierarchical than
+The ontology presented here is more comprehensive than
 ad-hoc first-order axiomatizations in some previous
 \Naproche formalizations. Sometimes
 this results in more complex and longer ontological checking tasks.
@@ -188,6 +185,18 @@ facts so that they can directly be accessed by the ATP.
     A disjoint family is a family $F$ such that $X$ is disjoint from $Y$ for all
     nonequal elements $X, Y$ of $F$.
   \end{definition}
+
+    \begin{definition*}
+      Let $X$ be a set.
+      The powerset of $X$ is the collection of subsets of $X$.
+    \end{definition*}
+
+Let $\pow(X)$ denote the powerset of $X$.
+
+    \begin{axiom*}
+      The powerset of any set is a set.
+    \end{axiom*}
+
 \end{forthel}
 
 
@@ -227,6 +236,12 @@ of sets and classes.
 \begin{forthel}
   Let $f$ stand for a map.
 
+\begin{definition}
+Let $f$ be a map. A value of $f$ is an object $y$ such
+that $f(x) = y$ for some $x \in \dom(f)$.
+\end{definition}
+
+
   \begin{axiom}
     Assume that $\dom(f)$ is a set and $f(x)$ is an object for any
     $x \in \dom(f)$.
@@ -238,15 +253,58 @@ of sets and classes.
     $f[S] = \class{f(x) | x \in S}$.
   \end{definition}
 
+\begin{definition}
+Let $f$ be a map. $\range(f) = f[\dom(f)]$.
+\end{definition}
+
+
   Let the image of $f$ stand for $f[\dom(f)]$.
 
-  \begin{definition}
-    $f$ maps elements of $S$ to elements of $T$ iff $\dom(f) = S$ and $f[S]
+\begin{definition}
+    A map from $S$ to $T$ is a map $f$ such that $\dom(f) = S$ and $f[S]
     \subseteq T$.
   \end{definition}
 
-  Let $f : S \rightarrow T$ stand for $f$ maps elements of $S$ to elements of
-  $T$.
+Let $f : S \rightarrow T$ stand for $f$ is a map from $S$ to $T$.
+
+\begin{definition}
+A surjection from $S$
+onto $T$ is a map $f$ from $S$ to $T$ such that $f[S] = T$.
+\end{definition}
+
+\begin{definition}
+Let $f$ be a map. $f$ is injective iff $f(x) \neq f(y)$ for all
+distinct elements $x,y$ of $\dom(f)$.
+\end{definition}
+
+\begin{signature}
+Let $f$ be an injective map.
+$\inv{f}$ is the map $g$ such that $\dom(g) = \range(f)$
+and for all $v \in \dom(g)$ $g(v) \in \dom(f)$ and $f(g(v))=v$.
+\end{signature}
+
+\begin{lemma}
+Let $f$ be an injective map. Then 
+$\inv{f} : \range(f) \rightarrow \dom(f)$.
+\end{lemma}
+
+
+\begin{definition}
+A bijection between $S$ and $T$ is an injective surjection from
+$S$ onto $T$.
+\end{definition}
+
+    \begin{definition*}
+      Let $x, y$ be sets.
+      $x$ and $y$ are equinumerous iff there exists a bijection between $x$ and
+      $y$.
+    \end{definition*}
+
+
+\begin{lemma} Let $S, T$ be classes.
+Let $f$ be a bijection between $S$ and $T$.
+Then $\inv{f}$ is a bijection between $T$ and $S$.
+\end{lemma}
 
   \begin{axiom}[Replacement Axiom]
     Let $X$ be a set.
@@ -265,6 +323,20 @@ of sets and classes.
     $f$.
   \end{definition}
 
+\begin{definition*}
+      Let $X$ be a set.
+      A function of $X$ is a function $f$ such that $\dom(f) = X$.
+    \end{definition*}
+
+    \begin{definition*}
+      Let $f$ be a function and $Y$ be a set.
+      $f$ surjects onto $Y$ iff $Y = \class{f(x) | x \in \dom(f)}$.
+    \end{definition*}
+
+    Let a surjective function from $X$ onto $Y$ stand for a function of $X$ that
+    surjects onto $Y$.
+
+
 Let $A,B$ stand for sets.
 Let $x$ is in $A$ denote $x$ is an element of $A$.
 
@@ -275,6 +347,46 @@ $A$ is nonempty iff $A$ has an element.
 \end{forthel}
 
 \section{* Cantor's Theorem}
+
+In this document we give a proof of Cantor's Theorem:
+
+  \begin{theorem*}
+    There is no surjection from a set onto its powerset.
+  \end{theorem*}
+
+  We need to provide certain definitions concerning surjective
+  functions and the notion of powerset.
+\begin{forthel}
+\end{forthel}
+    \begin{definition*}
+      Let $X$ be a set.
+      A function of $X$ is a function $f$ such that $\dom(f) = X$.
+    \end{definition*}
+
+    \begin{definition*}
+      Let $f$ be a function and $Y$ be a set.
+      $f$ surjects onto $Y$ iff $Y = \class{f(x) | x \in \dom(f)}$.
+    \end{definition*}
+
+    Let a surjective function from $X$ onto $Y$ stand for a function of $X$ that
+    surjects onto $Y$.
+  On this basis Cantor's theorem and its proof can be formalized as follows.
+\begin{forthel}
+    \begin{theorem*}[Cantor]
+      Let $M$ be a set. Then there is 
+      no surjective function from $M$ onto the powerset of $M$.
+    \end{theorem*}
+    \begin{proof}
+      Assume the contrary.
+      Take a surjective function $f$ from $M$ onto the powerset of $M$.
+      % The value of $f$ at any element of $M$ is a set.
+      Define \[ N = \class{x \in M | \text{$x$ is not an element of $f(x)$}}. \]
+      %$N$ is a subset of $M$.
+      Take an element $z$ of $M$ such that $f(z) = N$.
+      Then \[ z \in N \iff z \notin f(z) = N. \]
+      Contradiction.
+    \end{proof}
+\end{forthel}
 
 In this document we give a proof of Cantor's Theorem:
 
@@ -562,8 +674,6 @@ $2 + 5 = 7$.
 $2 \cdot 5 = 10$.
 \end{lemma}
 
-[dump on]
-
 \begin{lemma}
 $6 \cdot 4 = (2 \cdot 10) + 4$.
 \end{lemma}
@@ -673,11 +783,11 @@ $x - 1 < x$.
 \begin{proof}
 $x - 1 < x + 0 = x$.
 \end{proof}
-
+[timelimit 10]
 \begin{proposition}[1 18 e]
 If $0 < y$ then $0 < 1/y$.
 \end{proposition}
-
+[timelimit 3]
 \begin{proposition}[1 18 ee]
 Assume $0 < x < y$.
 Then $1/y < 1/x$.
@@ -750,10 +860,11 @@ $E^- = \{-x \in \mathbb{R} \mid x \in E\}$.
 \begin{lemma}
 $E^-$ is a subset of $\mathbb{R}$.
 \end{lemma}
-
+[timelimit 10]
 \begin{lemma}
 $x$ is an upper bound of $E$ iff $-x$ is a lower bound of $E^-$.
 \end{lemma}
+[timelimit 3]
 
 \begin{theorem}[1 11] Assume that $E$ is a nonempty subset of $\mathbb{R}$
 such that $E$ is bounded below.
@@ -1111,7 +1222,9 @@ For all $i \in A$ $i + 1 \in A$.
   Proof. Let $i \in A$. Then
   $n + (i -1) = (n + i) - 1 \leq x$ and
   $n + ((i + 1) - 1) = n + i \leq x$.
+[timelimit 10]
   Hence $i + 1 \in A$.
+[timelimit 3]
   qed.
 
 qed.
@@ -1497,12 +1610,15 @@ Take a positive integer $n$ such that
 $n\cdot (y-x) > 1$ (by 1 20 a).
 Take an integer $m$ such that
 \[ m -1 \leq n \cdot x < m. \]
+[timelimit 10]
 Then
 \[ n \cdot x < m = (m - 1) + 1 \leq (n\cdot x) + 1 <
 (n\cdot x) + (n\cdot (y-x)) = n \cdot (x + (y - x)) = n \cdot y. \]
 $n > 0$ and
 \[ x = \frac{n\cdot x}{n} < \frac{m}{n} < \frac{n\cdot y}{n} = y. \]
-Let $p = \frac{m}{n}$. Then $p \in \mathbb{Q}$ and $x < p < y$.
+Let $p = \frac{m}{n}$. 
+[timelimit 10]
+Then $p \in \mathbb{Q}$ and $x < p < y$.
 \end{proof}
 
 \end{forthel}

@@ -1,0 +1,37 @@
+\documentclass{article}
+\usepackage[english]{babel}
+\usepackage{../lib/tex/naproche}
+
+\begin{document}    
+
+\section{Cantor's Theorem (Wiedijk \# 63)}
+
+In this document we give a proof of Cantor's Theorem:
+
+  \begin{theorem*}
+    There is no surjection from a set onto its powerset.
+  \end{theorem*}
+
+  We need to provide certain definitions concerning surjective
+  functions and the notion of powerset.
+\begin{forthel}
+[prove off]
+[readtex \path{100_Theorems.ftl.tex}]
+[prove on]
+    \begin{theorem*}[Cantor]
+      Let $M$ be a set. Then there is 
+      no surjection from $M$ onto the powerset of $M$.
+    \end{theorem*}
+    \begin{proof}
+      Assume that $f$ is
+      a surjection from $M$ onto the powerset of $M$.
+      % The value of $f$ at any element of $M$ is a set.
+      Define \[ N = \class{x \in M | \text{$x$ is not an element of $f(x)$}}. \]
+      %$N$ is a subset of $M$.
+      Take an element $z$ of $M$ such that $f(z) = N$.
+      Then \[ z \in N \iff z \notin f(z) = N. \]
+      Contradiction.
+    \end{proof}
+\end{forthel}
+
+\end{document}
