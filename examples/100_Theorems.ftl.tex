@@ -278,13 +278,31 @@ $A$ is nonempty iff $A$ has an element.
 
 In this document we give a proof of Cantor's Theorem:
 
+% from foundations/sections/10_sets.ftl.tex
+  \begin{forthel}
+    \begin{definition}
+      Let $A$ be a class.
+      The powerclass of $A$ is
+      \[ \{ x \mid \text{$x$ is a subset of $A$} \}. \]
+    \end{definition}
+
+    Let $\pow(A)$ stand for the powerclass of $A$.
+
+    \begin{axiom}[Powerset]
+      Let $x$ be a set.
+      Then $\pow(x)$ is a set.
+    \end{axiom}
+
+    Let the powerset of $x$ stand for $\pow(x)$.
+  \end{forthel}
+
   \begin{theorem*}
     There is no surjection from a set onto its powerset.
   \end{theorem*}
 
   We need to provide certain definitions concerning surjective
   functions and the notion of powerset.
-
+\begin{forthel}
     \begin{definition*}
       Let $X$ be a set.
       A function of $X$ is a function $f$ such that $\dom(f) = X$.
@@ -302,20 +320,16 @@ In this document we give a proof of Cantor's Theorem:
       Let $X$ be a set.
       The powerset of $X$ is the collection of subsets of $X$.
     \end{definition*}
-
-    \begin{axiom*}
-      The powerset of any set is a set.
-    \end{axiom*}
-
+\end{forthel}
   On this basis Cantor's theorem and its proof can be formalized as follows.
-
+\begin{forthel}
     \begin{theorem*}[Cantor]
       Let $M$ be a set.
-      No function of $M$ surjects onto the powerset of $M$.
+      There exists no function $f$ of $M$ such that $f$ surjects onto $\pow(M)$.
     \end{theorem*}
     \begin{proof}
       Assume the contrary.
-      Take a surjective function $f$ from $M$ to the powerset of $M$.
+      Take a surjective function $f$ from $M$ to $\pow(M)$.
       The value of $f$ at any element of $M$ is a set.
       Define \[ N = \class{x \in M | \text{$x$ is not an element of $f(x)$}}. \]
       $N$ is a subset of $M$.
@@ -323,7 +337,7 @@ In this document we give a proof of Cantor's Theorem:
       Then \[ z \in N \iff z \notin f(z) = N. \]
       Contradiction.
     \end{proof}
-
+\end{forthel}
 
 \section{The Real Field}
 
@@ -562,7 +576,7 @@ $2 + 5 = 7$.
 $2 \cdot 5 = 10$.
 \end{lemma}
 
-[dump on]
+%[dump on]
 
 \begin{lemma}
 $6 \cdot 4 = (2 \cdot 10) + 4$.
@@ -1289,10 +1303,6 @@ $n \cdot ( a + \frac{(n + 1) \cdot d}{2})$.
 \end{proof}
 
 
-
-\section{* The Number of Subsets of a Set}
-
-
 \section{Finite Sequences and Products}
 
 \begin{forthel}
@@ -1356,6 +1366,11 @@ $S$ is infinite iff $S$ is not finite.
 \end{definition}
 
 \end{forthel}
+
+
+\section{* The Number of Subsets of a Set}
+
+
 
 \section{* Greatest Common Divisor Algorithm}
 
