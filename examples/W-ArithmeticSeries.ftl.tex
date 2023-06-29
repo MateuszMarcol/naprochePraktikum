@@ -1,0 +1,104 @@
+\documentclass{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage[foundations]{../lib/tex/naproche}
+
+
+\title{Sum of an Arithmetic Series}
+\author{}
+\date{}
+
+\begin{document}
+\maketitle
+
+\begin{forthel}
+    [prove off][check off]
+
+    [readtex \path{100_Theorems.ftl.tex}]
+
+    [prove on][check on]
+  \end{forthel}
+
+\section{* Sum of an Arithmetic Series}
+
+\newcommand{\sumarith}[3]{\sum_{i = 1}^{#3}(#1 + #2 \cdot i)}
+
+\begin{forthel}
+Let $a,d$ denote real numbers.
+Let $n$ denote a natural number.
+
+\begin{signature}
+$\sumarith{a}{d}{n}$ is a real number.
+\end{signature}
+
+\begin{axiom}
+$\sumarith{a}{d}{1} = a + d$.
+\end{axiom}
+
+\begin{axiom}[1]
+$\sumarith{a}{d}{n+1} = \sumarith{a}{d}{n} + (a + (d \cdot (n + 1)))$.
+\end{axiom}
+
+
+[timelimit 3]
+\begin{theorem} For all nonzero natural numbers $n$
+$$\sumarith{a}{d}{n} = n \cdot ( a + \frac{(n + 1) \cdot d}{2}).$$
+\end{theorem}
+\begin{proof}[by induction on $n$]
+Let $n$ be a nonzero natural number.
+
+Case $n = 1$.
+Trivial.
+
+Take a natural number $m$ such that $m + 1 = n$. $m$ is inductively smaller than $n$.
+
+$$\sumarith{a}{d}{m} = m \cdot ( a + \frac{(m + 1) \cdot d}{2}).$$
+
+Then
+$$\sumarith{a}{d}{n} = 
+(m \cdot ( a + \frac{(m + 1) \cdot d}{2})) + (a + (d \cdot (m + 1)))$$
+(by 1).
+
+
+Hence
+
+$\sumarith{a}{d}{n} =$
+
+$((m \cdot a) + (m \cdot \frac{n \cdot d}{2})) + (a + (d \cdot n)) =$
+
+$(((m \cdot a) + a) +  (m \cdot \frac{n \cdot d}{2})) + (d \cdot n) =$
+
+$(((m \cdot a) + (1 \cdot a)) +  (m \cdot \frac{n \cdot d}{2})) + (d \cdot n) =$
+
+$((n \cdot a) +  (m \cdot \frac{n \cdot d}{2})) + (d \cdot n)$.
+
+$((n \cdot a) +  (m \cdot \frac{n \cdot d}{2})) + (d \cdot n) =$
+
+$(n \cdot a) +  ((m \cdot \frac{n \cdot d}{2}) + (d \cdot n))=$
+
+$(n \cdot a) +  ((m \cdot \frac{n \cdot d}{2}) + (1 \cdot (d \cdot n)))=$
+
+$(n \cdot a) +  ((m \cdot \frac{n \cdot d}{2}) + (\frac{2}{2} \cdot (d \cdot n)))$.
+
+Then $(n \cdot a) +  ((m \cdot \frac{n \cdot d}{2}) + (\frac{2}{2} \cdot (d \cdot n))) =$
+
+$(n \cdot a) +  ((m \cdot \frac{n \cdot d}{2}) + (2 \cdot \frac{n \cdot d}{2})) =$
+
+$(n \cdot a) +  ((m +2) \cdot \frac{n \cdot d}{2})$.
+
+Then $(n \cdot a) +  ((m +2) \cdot \frac{n \cdot d}{2}) =$
+
+$(n \cdot a) +  ((n+1) \cdot \frac{n \cdot d}{2}) =$
+
+$(n \cdot a) +  \frac{(n+1) \cdot (n \cdot d)}{2} =$
+
+$(n \cdot a) +  \frac{n \cdot ((n+1) \cdot d)}{2} =$
+
+$(n \cdot a) +  (n \cdot \frac{((n+1) \cdot d)}{2}) =$
+
+$n \cdot ( a + \frac{(n + 1) \cdot d}{2})$.
+\end{proof}
+\end{forthel}
+
+\end{document}
