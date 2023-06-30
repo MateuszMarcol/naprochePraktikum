@@ -1,0 +1,72 @@
+\documentclass{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage[foundations]{../lib/tex/naproche}
+
+
+\title{Sum of an Arithmetic Series}
+\author{}
+\date{}
+
+\begin{document}
+\maketitle
+
+\begin{forthel}
+    [prove off][check off]
+
+    [readtex \path{100_Theorems.ftl.tex}]
+
+    [prove on][check on]
+  \end{forthel}
+
+\section{* The Number of Subsets of a Set}
+
+\begin{forthel}
+\begin{definition}
+Let $X$ be a finite set.
+$|X|$ is a natural number.
+\end{definition}
+
+\begin{axiom}
+Let $X$ be a finite set. Let $n$ be a natural number.
+If there exists a function $f$ such that $f$ is a bijection between $X$ and $\Seq{1}{n}$ then $|X|=n$.
+\end{axiom}
+
+\begin{definition}
+Let $X$ be a finite set.
+The number of elements in $X$ is $|X|$.
+\end{definition}
+
+%\begin{definition}
+%Let $Y$ be a set such that $Y$ is nonempty. Let $y$ be an element of $Y$.
+%$\{y\}_Y$ is $\{x \in Y \mid x = y\}$.
+%\end{definition}
+%\begin{lemma}
+%Let $Y$ be a nonempty set. Let $y$ be an element of $Y$.
+%Then $\{y\}_Y$ is a set.
+%\end{lemma}
+
+\begin{theorem}
+Let $X$ be a set such that $X$ is finite. Let $n$ be a natural number such that $|X|=n$.
+Then the number of elements in the powerset of $X$ is $2^{n}$.
+\end{theorem}
+%\begin{proof}[by induction on $n$]
+%$n$ is a natural number.
+%Case $n = 0$. $X$ is the empty set. The number of elements in the powerset of $X$ is $1$. $2^{0} = 1$.
+%Take a natural number $m$ such that $m + 1 = n$. $m$ is inductively smaller than$n$. 
+%Let $Y$ be a set such that the number of elements in $Y$ is equal to $n$.
+%Assume $y$ is a value of $Y$. Then $\{y\}_Y$ is a subset of $Y$. Let $X$ be equal to $(Y\setminus \{y\}_Y)$.
+%The number of elements in $X$ is equal to $m$. Thus the number of elements in the powerset of $X$ is equal to $2^{m}$.
+%$\pow(X)$ is a nonempty set.
+%Let $x$ be an element of $\pow(X)$. Then $x \cup \{y\}_Y$ is an element of $\pow(Y)$.
+%Let $M$ be a set. %Assume forall $z \in M$ exists an $x \in \pow(X)$ such that $z = x \cup \{y\}_Y$.%is equal to $\{(x \cup \{y\}_Y) \in \pow(Y) \mid x \in \pow(X)\}$. 
+%The number of elements in $M$ is equal to the number of elements in the powerset of $X$.
+%$X$ and $M$ are disjoint.
+%The powerset of $Y$ is the union of the powerset of $X$ and $M$.
+%Thus the number of elements in $Y$ is equal to $2^{m} + 2^{m}$. $2^{m} + 2^{m}= 2 \cdot 2^{m} = 2^{m+1} = 2^{n}$. end.
+%\end{proof}
+\end{forthel}
+
+
+\end{document}
