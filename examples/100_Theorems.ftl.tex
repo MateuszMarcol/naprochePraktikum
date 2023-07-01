@@ -1145,7 +1145,7 @@ for every natural number $m$ that divides $n$ $m = 1$ or $m = n$.
 
 \end{forthel}
 
-\section{* The Principle of Mathematical Induction}
+\section{The Principle of Mathematical Induction (Wiedijk \# 74)}
 
 \Naproche provides a special binary relation
 symbol $\prec$ for a universal inductive relation: if at any
@@ -1338,7 +1338,7 @@ $\sumgeom{x}{n} =
 
 \newcommand{\sumarith}[3]{\sum_{i = 1}^{#3}(#1 + #2 \cdot i)}
 
-\begin{forthel}
+
 Let $a,d$ denote real numbers.
 
 \begin{signature}
@@ -1355,11 +1355,11 @@ $\sumarith{a}{d}{n+1} = \sumarith{a}{d}{n} + (a + (d \cdot (n + 1)))$.
 
 
 
-\begin{theorem} For all nonzero natural numbers $n$
+\begin{theorem} For all natural numbers $n$
 $$\sumarith{a}{d}{n} = n \cdot ( a + \frac{(n + 1) \cdot d}{2}).$$
 \end{theorem}
 \begin{proof}[by induction on $n$]
-Let $n$ be a nonzero natural number.
+Let $n$ be a natural number.
 
 Case $n = 1$.
 Trivial.
@@ -1367,7 +1367,7 @@ Trivial.
 Take a natural number $m$ such that $m + 1 = n$. $m$ is inductively smaller than $n$.
 
 $$\sumarith{a}{d}{m} = m \cdot ( a + \frac{(m + 1) \cdot d}{2}).$$
-
+%
 Then
 $$\sumarith{a}{d}{n} = 
 (m \cdot ( a + \frac{(m + 1) \cdot d}{2})) + (a + (d \cdot (m + 1)))$$
@@ -1391,17 +1391,15 @@ $(n \cdot a) +  ((m \cdot \frac{n \cdot d}{2}) + (d \cdot n)) =$
 
 $(n \cdot a) +  ((m \cdot \frac{n \cdot d}{2}) + (2 \cdot \frac{n \cdot d}{2})) =$
 
-$(n \cdot a) +  ((m +2) \cdot \frac{n \cdot d}{2}) =$
-
-$(n \cdot a) +  ((n+1) \cdot \frac{n \cdot d}{2}) =$
+($n \cdot a) +  ((n+1) \cdot \frac{n \cdot d}{2}) =$
 
 $(n \cdot a) +  \frac{(n+1) \cdot (n \cdot d)}{2} =$
 
 $(n \cdot a) +  \frac{n \cdot ((n+1) \cdot d)}{2} =$
 
 $n \cdot ( a + \frac{(n + 1) \cdot d}{2})$.
+
 \end{proof}
-\end{forthel}
 
 
 
