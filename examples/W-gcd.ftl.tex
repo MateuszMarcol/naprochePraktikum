@@ -1,0 +1,66 @@
+\documentclass{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage[foundations]{../lib/tex/naproche}
+
+
+\title{Sum of an Arithmetic Series}
+\author{}
+\date{}
+
+\begin{document}
+\maketitle
+
+\begin{forthel}
+    [prove off][check off]
+
+    [readtex \path{100_Theorems.ftl.tex}]
+
+    [prove on][check on]
+  \end{forthel}
+
+
+
+\section{* Greatest Common Divisor Algorithm}
+
+\begin{forthel}
+Let $m,n$ denote integers.
+
+
+\begin{definition}
+The greatest common divisor of $m$ and $n$ is a natural number.
+\end{definition}
+
+\begin{axiom}
+The greatest common divisor of $m$ and $n$ is a divisor of $m$ and a divisor of $n$.
+\end{axiom}
+\begin{axiom}
+Let $d$ be a divisor of $m$ and a divisor of $n$.
+Then $d$ is a divisor of the greatest common divisor of $m$ and $n$.
+\end{axiom}
+
+
+\begin{definition}
+$\gcd(m,n)$ is a natural number.
+\end{definition}
+
+\begin{axiom}
+If $m$ is not a natural number then $\gcd(m,n) = \gcd(-m,n)$ and
+if $n$ is not a natural number then $\gcd(m,n) = \gcd(m,-n)$.
+\end{axiom}
+\begin{axiom}
+If $m=0$ then $\gcd(m,n)=n$ and if $n=0$ then $\gcd(m,n)=m$.
+\end{axiom}
+\begin{axiom}
+If $m \leq n$ then $\gcd(m,n) = \gcd(m,n-m)$ and if $n < m$ then $\gcd(m,n) = \gcd(m-n,n)$.
+\end{axiom}
+
+
+\begin{proposition}
+The greatest common divisor of $m$ and $n$ is $\gcd(m,n)$.
+\end{proposition}
+
+\end{forthel}
+
+\end{document}

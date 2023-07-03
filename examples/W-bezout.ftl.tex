@@ -1,0 +1,38 @@
+\documentclass{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage[foundations]{../lib/tex/naproche}
+
+
+\title{Sum of an Arithmetic Series}
+\author{}
+\date{}
+
+\begin{document}
+\maketitle
+
+\begin{forthel}
+    [prove off][check off]
+
+    [readtex \path{100_Theorems.ftl.tex}]
+    [readtex \path{W-gcd.ftl.tex}]
+
+    [prove on][check on]
+\end{forthel}
+
+
+\section{* Bezout's Theorem}
+
+
+\begin{forthel}
+
+Let $a,b$ denote integers.
+
+\begin{proposition}
+There exist integers $s,t$ such that $(a \cdot s) + (b \cdot t) = \gcd(a,b)$.
+\end{proposition}
+
+\end{forthel}
+
+\end{document}
