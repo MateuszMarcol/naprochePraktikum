@@ -1146,7 +1146,7 @@ for every natural number $m$ that divides $n$ $m = 1$ or $m = n$.
 
 \end{forthel}
 
-\section{* The Principle of Mathematical Induction}
+\section{The Principle of Mathematical Induction (Wiedijk \# 74)}
 
 \Naproche provides a special binary relation
 symbol $\prec$ for a universal inductive relation: if at any
@@ -1273,71 +1273,6 @@ $x \cdot x^{m} = x^{m+1}$.
 \end{lemma}
 
 \end{forthel}
-
-\section{* Sum of a Geometric Series}
-
-\newcommand{\sumgeom}[2]{\sum_{0 \leq i < #2} {#1}^i}
-
-{\em Case construct in induction proof should have 
-"Otherwise" to denote the remaining case. Beautify the 
-[...] commands}
-
-We treat the partial sums $\sumgeom{x}{n}$ of a geometric
-series as a function in $x$ and $n$ which satisfies some
-recursive axioms:
-
-\begin{lemma} 0=0. \end{lemma}
-
-Let $x,y,z,w$ denote real numbers. 
-Let $m,n$ denote natural number.
-
-
-
-
-\begin{signature}
-$\sumgeom{x}{n}$ is a real number.
-\end{signature}
-
-\begin{axiom}
-$\sumgeom{x}{0} = 0$.
-\end{axiom}
-
-\begin{axiom} Let $x$ be a real number and $n$ be
-a natural number. Then 
-$\sumgeom{x}{n+1} = (\sumgeom{x}{n}) + x^{n}$.
-\end{axiom}
-
-[prover vampire]
-
-\begin{theorem} Let $x \neq 1$. Then
-$$\sumgeom{x}{n} = \frac{1 - x^{n}}{1 - x}$$
-for all natural numbers $n$.
-\end{theorem}
-\begin{proof}[by induction on $n$]
-
-$1 - x \neq 0$.
-
-Let $n$ be a natural number.
-
-Case $n = 0$. Trivial.
-
-Take a natural number $m$ such that $m + 1 = n$. 
-$m$ is inductively smaller than $m+1$ and
-$\sumgeom{x}{m} = \frac{1 - x^{m}}{1 - x}$.
-
-Then
-
-$\sumgeom{x}{n} =
-\frac{1 - x^{m}}{1 - x} + x^{m} = 
-\frac{1 - x^{m}}{1 - x} + \frac{(1-x)\cdot x^{m}}{1 - x} =
-\frac{1 - x^{m}}{1 - x} + \frac{x^{m}-(x \cdot x^{m})}{1 - x} =
-\frac{1 - x^{m}}{1 - x} + \frac{x^{m} - x^{n}}{1 - x} =
-\frac{1 - x^{n}}{1 - x}$.
-\end{proof}
-
-
-
-\section{* The Number of Subsets of a Set}
 
 
 \section{Finite Sequences and Products}
