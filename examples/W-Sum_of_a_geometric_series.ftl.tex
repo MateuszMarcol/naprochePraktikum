@@ -1,0 +1,54 @@
+\documentclass{article}
+\usepackage[english]{babel}
+\usepackage{../lib/tex/naproche}
+
+\begin{document}    
+
+\section{Sum of a Geometric Series (Wiedijk \# 66)}
+
+\newcommand{\sumgeom}[2]{\sum_{0 \leq i < #2} {#1}^i}
+
+In this document we give a proof of the Sum of a Geometric Series:
+
+\begin{forthel}
+[prove off]
+[readtex \path{100_Theorems.ftl.tex}]
+[prove on]
+
+
+Let $x$ denote real number. 
+
+
+\begin{theorem} Let $x \neq 1$. Then
+$$\sumgeom{x}{n} = \frac{1 - x^{n}}{1 - x}$$
+for all natural numbers $n$.
+\end{theorem}
+\begin{proof}[by induction on $n$]
+
+$1 - x \neq 0$.
+
+Let $n$ be a natural number.
+
+Case $n = 0$. Trivial.
+
+Take a natural number $m$ such that $m + 1 = n$. 
+$m$ is inductively smaller than $m+1$ and
+$\sumgeom{x}{m} = \frac{1 - x^{m}}{1 - x}$.
+
+
+Let $a = x^{m}$ and $b = x^{n}$ and $c=1-x$.
+Then $a,b,c$ are real numbers and
+$\sumgeom{x}{n} =
+\frac{1 - x^{m}}{1 - x} + x^{m} = 
+\frac{1 - x^{m}}{1 - x} + \frac{x^{m} \cdot (1-x)}{1 - x} =
+\frac{1 - x^{m}}{1 - x} + \frac{(x^{m} \cdot 1) + (x^{m} \cdot (-x))}{1 - x} = 
+\frac{1 - x^{m}}{1 - x} + \frac{x^{m} + ((-x) \cdot x^{m})}{1 - x} =
+\frac{1 - x^{m}}{1 - x} + \frac{x^{m} + (-(x \cdot x^{m}))}{1 - x} =
+\frac{1 - x^{m}}{1 - x} + \frac{x^{m} - x^{n}}{1 - x} = 
+\frac{1 - a}{c} + \frac{a - b}{c} =
+\frac{1 - b}{c} = 
+\frac{1 - x^{n}}{1 - x}$.
+
+\end{proof}
+
+\end{forthel}

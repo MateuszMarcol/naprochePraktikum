@@ -1272,6 +1272,86 @@ Let $i$ denote integers.
 $x \cdot x^{m} = x^{m+1}$.
 \end{lemma}
 
+\begin{axiom}
+Let $m$ be a natural number. 
+Then $x^{m}$ is a real number and
+$(1 - x^{m}) + (x^{m} - x^{m+1}) = 1 - x^{m+1}$.
+\end{axiom}
+
+\end{forthel}
+
+
+\section{* Sum of a Geometric Series}
+
+\newcommand{\sumgeom}[2]{\sum_{0 \leq i < #2} {#1}^i}
+
+{\em Case construct in induction proof should have 
+"Otherwise" to denote the remaining case. Beautify the 
+[...] commands}
+
+We treat the partial sums $\sumgeom{x}{n}$ of a geometric
+series as a function in $x$ and $n$ which satisfies some
+recursive axioms:
+
+\begin{forthel}
+
+\begin{lemma} 0=0. \end{lemma}
+
+Let $x,y,z,w$ denote real numbers. 
+Let $m,n$ denote natural number.
+
+
+\begin{signature}
+$\sumgeom{x}{n}$ is a real number.
+\end{signature}
+
+\begin{axiom}
+$\sumgeom{x}{0} = 0$.
+\end{axiom}
+
+\begin{axiom} Let $x$ be a real number and $n$ be
+a natural number. Then $n+1$ is a natural number and
+$\sumgeom{x}{n+1} = (\sumgeom{x}{n}) + x^{n}$.
+\end{axiom}
+
+% That's the proof that can be found in the file
+% W-Sum_of_a_geometric_series
+% 
+% Let $x$ denote real number. 
+% 
+% 
+% \begin{theorem} Let $x \neq 1$. Then
+% $$\sumgeom{x}{n} = \frac{1 - x^{n}}{1 - x}$$
+% for all natural numbers $n$.
+% \end{theorem}
+% \begin{proof}[by induction on $n$]
+% 
+% $1 - x \neq 0$.
+% 
+% Let $n$ be a natural number.
+% 
+% Case $n = 0$. Trivial.
+% 
+% Take a natural number $m$ such that $m + 1 = n$. 
+% $m$ is inductively smaller than $m+1$ and
+% $\sumgeom{x}{m} = \frac{1 - x^{m}}{1 - x}$.
+% 
+% 
+% Let $a = x^{m}$ and $b = x^{n}$ and $c=1-x$.
+% Then $a,b,c$ are real numbers and
+% $\sumgeom{x}{n} =
+% \frac{1 - x^{m}}{1 - x} + x^{m} = 
+% \frac{1 - x^{m}}{1 - x} + \frac{x^{m} \cdot (1-x)}{1 - x} =
+% \frac{1 - x^{m}}{1 - x} + \frac{(x^{m} \cdot 1) + (x^{m} \cdot (-x))}{1 - x} = 
+% \frac{1 - x^{m}}{1 - x} + \frac{x^{m} + ((-x) \cdot x^{m})}{1 - x} =
+% \frac{1 - x^{m}}{1 - x} + \frac{x^{m} + (-(x \cdot x^{m}))}{1 - x} =
+% \frac{1 - x^{m}}{1 - x} + \frac{x^{m} - x^{n}}{1 - x} = 
+% \frac{1 - a}{c} + \frac{a - b}{c} =
+% \frac{1 - b}{c} = 
+% \frac{1 - x^{n}}{1 - x}$.
+% 
+% \end{proof}
+
 \end{forthel}
 
 
