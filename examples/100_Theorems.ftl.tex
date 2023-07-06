@@ -1482,9 +1482,9 @@ Hence $\FinSet{p}{1}{r}$ is not the class of prime natural numbers.
 Let $m,n$ denote integers.
 
 
-\begin{definition}
+\begin{signature}
 The greatest common divisor of $m$ and $n$ is a natural number.
-\end{definition}
+\end{signature}
 
 \begin{axiom}
 The greatest common divisor of $m$ and $n$ is a divisor of $m$ and a divisor of $n$.
@@ -1494,39 +1494,33 @@ Let $d$ be a divisor of $m$ and a divisor of $n$.
 Then $d$ is a divisor of the greatest common divisor of $m$ and $n$.
 \end{axiom}
 
-
-\begin{definition}
+\begin{signature}
 $\gcd(m,n)$ is a natural number.
-\end{definition}
+\end{signature}
 
 \begin{axiom}
-If $m$ is not a natural number then $\gcd(m,n) = \gcd(-m,n)$ and
-if $n$ is not a natural number then $\gcd(m,n) = \gcd(m,-n)$.
+If $m$ is not a natural number then $\gcd(m,n) = \gcd(-m,n)$.
 \end{axiom}
 \begin{axiom}
-If $m=0$ then $\gcd(m,n)=n$ and if $n=0$ then $\gcd(m,n)=m$.
+If $n$ is not a natural number then $\gcd(m,n) = \gcd(m,-n)$.
 \end{axiom}
 \begin{axiom}
-If $m \leq n$ then $\gcd(m,n) = \gcd(m,n-m)$ and if $n < m$ then $\gcd(m,n) = \gcd(m-n,n)$.
+If $m=0$ and $n$ is a natural number then $\gcd(m,n)=n$.
+\end{axiom}
+\begin{axiom}
+If $n=0$ and $m$ is a natural number then $\gcd(m,n)=m$.
+\end{axiom}
+\begin{axiom}
+If $m \leq n$ then $\gcd(m,n) = \gcd(m,n-m)$.
+\end{axiom}
+\begin{axiom}
+If $n < m$ then $\gcd(m,n) = \gcd(m-n,n)$.
 \end{axiom}
 
 
-\begin{proposition}
-The greatest common divisor of $m$ and $n$ is $\gcd(m,n)$.
-\end{proposition}
-
-\end{forthel}
-
-\section{* Bezout's Theorem}
-
-
-\begin{forthel}
-
-Let $a,b$ denote integers.
-
-\begin{proposition}
-There exist integers $s,t$ such that $(a \cdot s) + (b \cdot t) = \gcd(a,b)$.
-\end{proposition}
+%\begin{proposition}
+%The greatest common divisor of $m$ and $m$ is $\gcd(m,n)$.
+%\end{proposition}
 
 \end{forthel}
 
@@ -1545,49 +1539,6 @@ Let $p$ denote a prime number.
     $n$ and $m$ are coprime iff $n$ and $m$ have no common divisor $d$ such that $d$ is a prime number.
 \end{definition}
 
-\begin{lemma}
-    For all rational numbers $q$ there exist coprime integers $m,n$ such that $m \cdot q = n$.
-\end{lemma}
-
-
-
-Let $n$ denote an integer.
-\begin{lemma}
-    If $p$ divides $n^{2}$ then $p$ divides $n$.
-\end{lemma}
-%\begin{proof}
-%    Assume $p$ divides $n^{2}$ and $p$ not divides $n$. $p$ not divides $n$ and $\gcd(p,n)=1$.
-%    There exist integers $j,k$ such that $(k \cdot n) + (j \cdot p) = 1$.
-%    Let $k,j$ be integers such that $(k \cdot n) + (j \cdot p) = 1$.
-%    $n^{2} = n \cdot n^{1} = n \cdot n$.
-%    $p$ divides $k \cdot (n \cdot n)$ and $p$ divides $(j \cdot p) \cdot n$.
-%    Then $p$ divides $(k \cdot (n \cdot n)) + ((j \cdot p) \cdot n)$.
-%    $(k \cdot n^{2}) + ((j \cdot p) \cdot n) = (k \cdot (n \cdot n)) + ((j \cdot p) \cdot n)$.
-%    Then $((k \cdot n) \cdot n) + ((j \cdot p) \cdot n) = ((k \cdot n) + (j \cdot p)) \cdot n = 1 \cdot n = n$.
-%    Thus $p$ divides $n$. 
-%\end{proof}
-
-
-
-% \begin{proposition}
-    % $q^{2} = p$ for no rational number $q$.
-% \end{proposition}
-% \begin{proof}[by contradiction]
-    % Assume the contrary.
-    % Take a positive rational number $q$ such that $p = q^{2}$.
-    % Take coprime natural numbers $m,n$ such that $m \cdot q = n$.
-    % Then $(m \cdot q) \cdot n = n^{2}$. 
-    % Then  $(m \cdot q) \cdot n = (m \cdot q) \cdot (m \cdot q) = ((m \cdot q) \cdot m) \cdot q$.
-    % $((m \cdot q) \cdot m) \cdot q  = (m^{2} \cdot q) \cdot q = m^{2} \cdot q^{2}$.
-    % $m^{2} \cdot q^{2} = n^{2}.$
-    % Then $p \cdot m^{2} = n^{2}$.
-    % $p$ divides $n^{2}$. Therefore $p$ divides $n$.
-    % Take a natural number $k$ such that $n = k \cdot p$.
-    % Then $p \cdot m^{2} = p \cdot (k \cdot n)$.
-    % Therefore $m \cdot m$ is equal to $p \cdot k^{2}$.
-    % Hence $p$ divides $m$.
-    % Contradiction.
-% \end{proof}
 \end{forthel}
 
 \section{* The Denumerability of the Rational Numbers}
