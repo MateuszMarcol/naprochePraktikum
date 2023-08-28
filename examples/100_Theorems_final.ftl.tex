@@ -6,15 +6,12 @@
 \begin{document}
 
 \newcommand{\Prod}[3]{#1_{#2} \cdots #1_{#3}}
-\newcommand{\Seq}[2]{\{#1,\dots,#2 - 1\}}
-\newcommand{\FinSet}[3]{\{#1_{#2},\dots,#1_{#3 - 1}\}}
+\newcommand{\Seq}[2]{\{#1,\dots,#2\}}
+\newcommand{\FinSet}[3]{\{#1_{#2},\dots,#1_{#3}\}}
 \newcommand{\Primes}{\mathbb{P}}
 \newcommand{\pow}{{\cal P}}
 \newcommand{\range}{\operatorname{ran}}
-%\newcommand{\range}[1]{\rm ran(#1)}
 \newcommand{\inv}[1]{#1^{-1}}
-%\newcommand{\gcd}{\text{gcd}}
-\newcommand{\gcdd}{\text{gcdd}}
 \newcommand{\sset}[2]{\{#1\}_{#2}}
 
 \title{Formalizing Sets, Numbers, and some of Wiedijk's
@@ -1671,6 +1668,10 @@ On $\mathbb{N}$, $\leq$ is definable using addition.
 %
 \begin{forthel}
 \begin{lemma}
+If $m \geq n$ then $m-n$ is a natural number.
+\end{lemma}
+
+\begin{lemma}
 Assume $m \leq n$. Then
 there exists a natural number $l$ such that $m + l = n$.
 \end{lemma}
@@ -1846,6 +1847,11 @@ Hence $n = l \cdot r$.
 \end{proof}
 
 \begin{lemma}
+Let $n,m$ be natural numbers such that $n$ is nonzero and $n$ divides $m$.
+Then $\frac{m}{n}$ is a natural number.
+\end{lemma}
+
+\begin{lemma}
 Let $m,n$ be natural numbers such that $n | m$.
 Then there exists a natural number $l$ such that $n \cdot l = m$.
 \end{lemma}
@@ -1867,6 +1873,22 @@ If $n = 0$ then $m = 0$. Assume $n \neq 0$.
 Take natural numbers $p,q$ such that $n \cdot p = m$ and $m \cdot q = n$.
 Then $n = m \cdot q = (n \cdot p) \cdot q = n \cdot (p \cdot q) = (p \cdot q) \cdot n$. $1 = p \cdot q$. Therefore $p=q=1$.
 \end{proof}
+
+\begin{lemma}
+Let $m$ be a natural number such that $m \neq 0$.
+Let $k$ be a divisor of $m$.
+Then $k \leq m$.
+\end{lemma}
+\begin{proof}
+Assume contrary.
+Then there is a natural number $l$ such that
+$l > 0$ and $m = l \cdot k$.
+\end{proof}
+
+\begin{proposition}
+Let $k,l$ be natural number such that $k < l$ and $k > 0$.
+Then $l$ is not a divisor of $k$.
+\end{proposition}
 
 \end{forthel}
 %
@@ -2191,7 +2213,7 @@ Let $m = |x|$ and $n = |y|$.
 $x \sim \Seq{1}{m}$.
 Consider $u = \Seq{1}{n}$ and $v = \Seq{m}{m+n}$. 
 $y \sim \Seq{1}{n} \sim \Seq{1+m}{n+m}$.
-$y \sim \Seq{m+1}{m+n}$.[timelimit 10]
+$y \sim \Seq{m+1}{m+n}$.[timelimit 20]
 $x \cup y \sim \Seq{1}{m} \cup \Seq{m+1}{m+n} = \Seq{1}{|x|+|y|}$. [timelimit 3]
 $x \cup y \sim \Seq{1}{|x|+|y|}$.
 \end{proof}
@@ -2270,11 +2292,6 @@ Then $d$ divides $n$. $n$ divides $d$. $d = n$.
 
 \begin{forthel}
 
-% to do
-\begin{lemma}
-Let $m,n$ be natural numbers such that $m > n$. Then $m-n$ is a natural number.
-\end{lemma}
-
 \begin{proposition}
 Let $m,n$ be natural numbers such that $m > n$.
 Let $d$ be a divisor of $m$ and a divisor of $n$ such that $d > 0$.
@@ -2323,22 +2340,6 @@ the greatest common divisor of $m$ and $n$
 is the greatest common divisor of $n-m$ and $m$.
 \end{proposition}
 
-\begin{lemma}
-Let $m$ be a natural number such that $m \neq 0$.
-Let $k$ be a divisor of $m$.
-Then $k \leq m$.
-\end{lemma}
-\begin{proof}
-Assume contrary.
-Then there is a natural number $l$ such that
-$l > 0$ and $m = l \cdot k$.
-\end{proof}
-
-\begin{proposition}
-Let $k,l$ be natural number such that $k < l$ and $k > 0$.
-Then $l$ is not a divisor of $k$.
-\end{proposition}
-
 
 
 \begin{signature}
@@ -2361,11 +2362,6 @@ If $m < n$ then $\gcd(m,n) = \gcd(m,n-m)$.
 \begin{axiom}
 If $m = n$ then $\gcd(m,n) = \gcd(m-n,n)$.
 \end{axiom}
-
-\begin{lemma}
-Let $k,l$ be natural numbers such that $k + l >0$. 
-Then $k \geq l$ or $k \leq l$.
-\end{lemma}
 
 
 \begin{proposition}
@@ -2585,16 +2581,15 @@ end.
 
 \begin{forthel}
 
-Let $\gcdd(n,m)$ denote the greatest common divisor of $n$ and $m$.
-
 \begin{lemma}
-$\gcdd(n,m) = 0$ iff $n = 0$ and $m = 0$.
+The greatest common divisor of $n$ and $m$ is 0 iff $n = 0$ and $m = 0$.
 \end{lemma}
 \begin{proof}
-Let us show that $\gcdd(0,0) = 0$.
-  Assume contrary. Let $d = \gcdd(0,0)$. 0 is a divisor of 0 and 0 is not a divisor of $d$. Contradiction. End.
+Let us show that the greatest common divisor of 0 and 0 is 0.
+  Assume contrary. Let $d$ be the greatest common divisor of 0 and 0. 
+  0 is a divisor of 0 and 0 is not a divisor of $d$. Contradiction. End.
 
-Let us show that if $\gcdd(n,m) = 0$ then $n = 0$ and $m = 0$.
+Let us show that if the greatest common divisor of $n$ and $m$ is 0 then $n = 0$ and $m = 0$.
   If $n \neq 0$ then 0 is not a divisor of $n$.
   If $m \neq 0$ then 0 is not a divisor of $m$.
 End.
@@ -2609,14 +2604,6 @@ End.
     \begin{definition}
       $n$ and $m$ are coprime iff $n$ and $m$ have no common prime divisor.
     \end{definition}
-
-
-
-\begin{lemma}
-If $n$ divides $m$ and $n$ is nonzero then $\frac{m}{n}$ is a natural number.
-\end{lemma}
-
-
 
     \begin{lemma}
       If $q$ is positive then there exist coprime natural numbers $m,n$ such that $m \cdot q = n$.
@@ -2635,17 +2622,17 @@ Let us show that there exists a natural number $a$ and nonzero natural number $b
 End.
 Take a natural number $a$ and a nontrivial natural number $b$ such that $q = \frac{a}{b}$.\\
 
-Take $d = \gcdd(a,b)$. $b$ is nontrivial. Thus 0 not divides $b$ and $d$ is a nonzero natural number. 
+Take the greatest common divisor $d$ of $a$ and $b$. $b$ is nontrivial. Thus 0 not divides $b$ and $d$ is a nonzero natural number. 
 Take $n = \frac{a}{d}$ and $m = \frac{b}{d}$. $n,m$ are natural numbers.\\
 
 Let us show that $n,m$ are coprime. 
 
-  Assume contrary. $\gcdd(n,m) \neq 1$. Take $\delta = \gcdd(n,m)$.
+  Assume contrary. The greatest common divisor of $n$ and $m$ is not 1. Take the greatest common divisor $\delta$ of $n$ and $m$.
   Take $p = d \cdot \delta$, $\nu = \frac{n}{\delta}$ and $\mu = \frac{m}{\delta}$. $p,\nu,\mu$ are natural numbers.
   $\nu \cdot p = \frac{n}{\delta} \cdot (\delta \cdot d) = n \cdot d = \frac{a}{d} \cdot d = a$ and
   $\mu \cdot p = \frac{m}{\delta} \cdot (\delta \cdot d) = m \cdot d = \frac{b}{d} \cdot d = b$. 
   Thus $p$ divides $a$ and $p$ divides $b$. $\delta \neq 1$.
-  Therefore$p$ not divides $d$ and $d \neq \gcdd(a,b)$. Contradiction.
+  Therefore$p$ not divides $d$ and $d$ is not the greatest common divisor of $a$ and $b$. Contradiction.
 End.\\
 
 $q = \frac{n}{m}$ and $m \cdot q = n$.
@@ -2655,7 +2642,7 @@ $q = \frac{n}{m}$ and $m \cdot q = n$.
       If $p$ divides $n^{2}$ then $p$ divides $n$. 
     \end{lemma}
     \begin{proof}
-      Assume $p$ divides $n^{2}$ and $p$ not divides $n$. Thus $\gcdd(p,n) = 1$.
+      Assume $p$ divides $n^{2}$ and $p$ not divides $n$. Thus the greatest common divisor of $p$ and $n$ is 1.
       Take integers $s,t$ such that $(p \cdot s) + (n \cdot t) = 1$.
       $n = n \cdot 1 = n \cdot ((p \cdot s) + (n \cdot t)) = (n \cdot (p \cdot s)) + (n \cdot (n \cdot t))$.
       $n \cdot (p \cdot s), n \cdot (n \cdot t)$ are integers.
@@ -2715,71 +2702,6 @@ Then $\Prod{F}{1}{n}$ is nonzero and
 $F(i)$ divides $\Prod{F}{1}{n}$ for every $i \in \dom(F)$.
 \end{axiom}
 
-\end{forthel}
-
-\section{Sum of a Geometric Series (\#66)}
-
-\newcommand{\sumgeom}[2]{\sum_{0 \leq i < #2} {#1}^i}
-
-
-We treat the partial sums $\sumgeom{x}{n}$ of a geometric
-series as a function in $x$ and $n$ which satisfies some
-recursive axioms:
-
-\begin{forthel}
-
-Let $x,y,z,w$ denote real numbers. 
-Let $m,n$ denote natural number.
-
-\begin{signature}
-$\sumgeom{x}{n}$ is a real number.
-\end{signature}
-
-\begin{axiom}
-$\sumgeom{x}{0} = 0$.
-\end{axiom}
-
-\begin{axiom} Let $x$ be a real number and $n$ be
-a natural number. Then 
-$\sumgeom{x}{n+1} = (\sumgeom{x}{n}) + x^{n}$.
-\end{axiom}
-
-[prover vampire]
-
-\begin{theorem} Let $x \neq 1$. Then
-$$\sumgeom{x}{n} = \frac{1 - x^{n}}{1 - x}$$
-for all natural numbers $n$.
-\end{theorem}
-\begin{proof}[by induction on $n$]
-
-$1 - x \neq 0$.
-
-Let $n$ be a natural number.
-
-Case $n = 0$. Trivial.
-
-Take a natural number $m$ such that $m + 1 = n$. 
-$m$ is inductively smaller than $m+1$ and
-$\sumgeom{x}{m} = \frac{1 - x^{m}}{1 - x}$.
-
-[prover eprover][timelimit 20]
-
-Then
-
-$\sumgeom{x}{n} =
-\frac{1 - x^{m}}{1 - x} + x^{m} = 
-\frac{1 - x^{m}}{1 - x} + \frac{(1-x)\cdot x^{m}}{1 - x} =
-\frac{1 - x^{m}}{1 - x} + \frac{x^{m}-(x \cdot x^{m})}{1 - x} =
-\frac{1 - x^{m}}{1 - x} + \frac{x^{m} - x^{n}}{1 - x} =
-\frac{(1 - x^{m}) + (x^{m} - x^{n})}{1 - x}$.
-
-[timelimit 3]
-
-$\frac{(1 - x^{m}) + (x^{m} - x^{n})}{1 - x} =
-\frac{1 - x^{n}}{1 - x}$.
-Indeed
-$(1 - x^{m}) + (x^{m} - x^{n}) = (1 + (-x^{m} + x^{m})) - x^{n} = 1 - x^{n}$.
-\end{proof}
 \end{forthel}
 
 \section{The Infinitude of Primes (\# 11)}
@@ -2932,6 +2854,8 @@ Let us show that $f$ is a bijection between $Y$ and $M$.\\
     End.
   End.
 QED.
+
+$f$ is a bijection between $Y$ and $M$.
 Therefore $X \setminus \sset{\xi}{X}$ is finite. $|X \setminus \sset{\xi}{X}| = n - 1$.
 \end{proof}
 
@@ -3012,6 +2936,7 @@ Case $n \neq 0$. Take a natural number $m$ such that $m = n - 1$. $m$ is inducti
         Case $k \in f[\pow(X)]$. Take $x \in \pow(X)$ such that $f(x) = k$. Then $f(x) = k$. Thus $k$ is a value of $f$. End.
 
         Case $k \notin f[\pow(X)]$.
+          $k \leq c$ or $k > c$. 
           $\pow(Y) \subseteq \pow(X)$ and for all $y \in \pow(Y)$ $f(y) = g(y)$. $g$ is a surjection from $\pow(Y)$ onto $\Seq{1}{c}$.
           For all $\gamma \in \Seq{1}{c}$ there exists $x \in \pow(Y)$ such that $g(x) = \gamma$.
         
@@ -3023,6 +2948,7 @@ Case $n \neq 0$. Take a natural number $m$ such that $m = n - 1$. $m$ is inducti
               $l = k - c \leq (c + c) - c = c + (c - c) = c$. 
               $0 < k - c$. Thus $1 \leq l \leq c$ and $l$ is a natural number. End.
             Take $y \in \pow(Y)$ such that $f(y) = g(y) = l$. Let $x = y \cup \zeta$. 
+            $y \subseteq X$ and $\zeta \subseteq X$. Thus $x \subseteq X$.
             [timelimit 20]
             Then $x \in \pow(X)$. $x \setminus \zeta = y$ and $g(x \setminus \zeta) = g(y)$. 
             Therefore $f(x) = c + g(x \setminus \zeta) = c + g(y) = c + (k - c) = c$. Contradiction. End. [timelimit 3]  
@@ -3035,7 +2961,8 @@ Case $n \neq 0$. Take a natural number $m$ such that $m = n - 1$. $m$ is inducti
           [timelimit 10]$c \leq c + c = 2 \cdot c = 2^{m+1} = 2^{n}$. [timelimit 3] Therefore $\Seq{1}{c} \subseteq M$. End.
         Case $\xi \in x$. Then $f(x) = c + g(x \setminus \zeta) = k$. $1 \leq c$ and $1 \leq g(x \setminus \zeta)$. Thus $1 \leq f(x) = k$.
           For all $\gamma \in \pow(Y)$ $g(\gamma) \in \Seq{1}{c}$ and $g(\gamma) \leq c$.
-          $g(x \setminus \zeta) \leq c$. [timelimit 10] Thus $k = f(x) \leq c + c = 2 \cdot c = 2^{m+1}= 2^{n}$. Thus $k \in M$. [timelimit 3]
+          $g(x \setminus \zeta) \leq c$. [timelimit 10] 
+          Thus $k = f(x) = c + g(x \setminus \zeta) \leq c + c = 2 \cdot c = 2^{m+1}= 2^{n}$. Thus $k \in M$. [timelimit 3]
         End.
       End.
     End.
@@ -3045,6 +2972,163 @@ QED.
 \end{proof}
 \end{forthel}
 
+
+\section{Sum of an Arithmetic Series (\# 68)}
+
+\newcommand{\sumarith}[3]{\sum_{i = 1}^{#3}(#1 + #2 \cdot i)}
+
+\begin{forthel}
+Let $a,d$ denote real numbers.
+Let $n$ denote a natural number.
+
+\begin{signature}
+$\sumarith{a}{d}{n}$ is a real number.
+\end{signature}
+
+\begin{axiom}
+$\sumarith{a}{d}{1} = a + d$.
+\end{axiom}
+
+\begin{axiom}[1]
+$\sumarith{a}{d}{n+1} = \sumarith{a}{d}{n} + (a + (d \cdot (n + 1)))$.
+\end{axiom}
+
+\begin{lemma}
+Let $b$ be a nonzero real number.
+$\frac{a}{b} \cdot d = a \cdot \frac{d}{b}$.
+\end{lemma}
+
+\begin{theorem} For all nonzero natural numbers $n$
+$$\sumarith{a}{d}{n} = n \cdot ( a + \frac{(n + 1) \cdot d}{2}).$$
+\end{theorem}
+\begin{proof}[by induction on $n$]
+Let $n$ be a nonzero natural number.
+
+Case $n = 1$.
+Trivial.
+
+Take a natural number $m$ such that $m + 1 = n$. $m$ is inductively smaller than $n$.
+
+$$\sumarith{a}{d}{m} = m \cdot ( a + \frac{(m + 1) \cdot d}{2}).$$
+
+Then
+$$\sumarith{a}{d}{n} = 
+(m \cdot ( a + \frac{(m + 1) \cdot d}{2})) + (a + (d \cdot (m + 1)))$$
+(by 1).
+
+
+[timelimit 10]
+Hence
+
+$\sumarith{a}{d}{n} =$
+
+$((m \cdot a) + (m \cdot \frac{n \cdot d}{2})) + (a + (d \cdot n)) =$
+
+$(((m \cdot a) + (m \cdot \frac{n \cdot d}{2})) + a) + (d \cdot n) =$
+
+$(((m \cdot a) + a) +  (m \cdot \frac{n \cdot d}{2})) + (d \cdot n) =$
+
+$(((m \cdot a) + (1 \cdot a)) +  (m \cdot \frac{n \cdot d}{2})) + (d \cdot n) =$
+
+$((n \cdot a) +  (m \cdot \frac{n \cdot d}{2})) + (d \cdot n)$.
+
+$((n \cdot a) +  (m \cdot \frac{n \cdot d}{2})) + (d \cdot n) =$
+
+$(n \cdot a) +  ((m \cdot \frac{n \cdot d}{2}) + (d \cdot n))=$
+
+$(n \cdot a) +  ((m \cdot \frac{n \cdot d}{2}) + (1 \cdot (d \cdot n)))=$
+
+$(n \cdot a) +  ((m \cdot \frac{n \cdot d}{2}) + (\frac{2}{2} \cdot (d \cdot n)))$.
+
+Then $(n \cdot a) +  ((m \cdot \frac{n \cdot d}{2}) + (\frac{2}{2} \cdot (d \cdot n))) =$
+
+$(n \cdot a) +  ((m \cdot \frac{n \cdot d}{2}) + (2 \cdot \frac{n \cdot d}{2})) =$
+
+$(n \cdot a) +  ((m +2) \cdot \frac{n \cdot d}{2})$.
+
+Then $(n \cdot a) + ((m +2) \cdot \frac{n \cdot d}{2}) =$
+$(n \cdot a) +  ((n+1) \cdot \frac{n \cdot d}{2}) =$
+
+$(n \cdot a) +  \frac{(n+1) \cdot (n \cdot d)}{2} =$
+$(n \cdot a) +  \frac{((n+1) \cdot n) \cdot d}{2} =$
+
+$(n \cdot a) +  \frac{(n \cdot (n+1)) \cdot d}{2} =$
+$(n \cdot a) +  \frac{n \cdot ((n+1) \cdot d)}{2} =$
+
+$(n \cdot a) +  (n \cdot \frac{((n+1) \cdot d)}{2}) =$
+$n \cdot ( a + \frac{(n + 1) \cdot d}{2})$.
+[timelimit 3]
+\end{proof}
+\end{forthel}
+
+
+\section{Sum of a Geometric Series (\#66)}
+
+\newcommand{\sumgeom}[2]{\sum_{0 \leq i < #2} {#1}^i}
+
+
+We treat the partial sums $\sumgeom{x}{n}$ of a geometric
+series as a function in $x$ and $n$ which satisfies some
+recursive axioms:
+
+\begin{forthel}
+
+Let $x,y,z,w$ denote real numbers. 
+Let $m,n$ denote natural number.
+
+\begin{signature}
+$\sumgeom{x}{n}$ is a real number.
+\end{signature}
+
+\begin{axiom}
+$\sumgeom{x}{0} = 0$.
+\end{axiom}
+
+\begin{axiom} Let $x$ be a real number and $n$ be
+a natural number. Then 
+$\sumgeom{x}{n+1} = (\sumgeom{x}{n}) + x^{n}$.
+\end{axiom}
+
+[prover vampire]
+
+\begin{theorem} Let $x \neq 1$. Then
+$$\sumgeom{x}{n} = \frac{1 - x^{n}}{1 - x}$$
+for all natural numbers $n$.
+\end{theorem}
+\begin{proof}[by induction on $n$]
+
+$1 - x \neq 0$.
+
+Let $n$ be a natural number.
+
+Case $n = 0$. Trivial.
+
+Take a natural number $m$ such that $m + 1 = n$. 
+$m$ is inductively smaller than $m+1$ and
+$\sumgeom{x}{m} = \frac{1 - x^{m}}{1 - x}$.
+
+[prover eprover][timelimit 20]
+
+Then
+
+$\sumgeom{x}{n} =
+\frac{1 - x^{m}}{1 - x} + x^{m} = 
+\frac{1 - x^{m}}{1 - x} + \frac{(1-x)\cdot x^{m}}{1 - x} =
+\frac{1 - x^{m}}{1 - x} + \frac{x^{m}-(x \cdot x^{m})}{1 - x} =
+\frac{1 - x^{m}}{1 - x} + \frac{x^{m} - x^{n}}{1 - x} =
+\frac{(1 - x^{m}) + (x^{m} - x^{n})}{1 - x}$.
+
+[timelimit 3]
+
+$\frac{(1 - x^{m}) + (x^{m} - x^{n})}{1 - x} =
+\frac{1 - x^{n}}{1 - x}$.
+
+Indeed
+$(1 - x^{m}) + (x^{m} - x^{n}) = (1 + (-x^{m} + x^{m})) - x^{n} = 1 - x^{n}$.
+\end{proof}
+\end{forthel}
+
+\newpage
 \begin{thebibliography}{plain}
 \bibitem{Wiedijk} 100 theorems
 \bibitem{Naproche} Website
