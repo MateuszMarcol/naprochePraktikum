@@ -3076,8 +3076,8 @@ recursive axioms:
 
 \begin{forthel}
 
-Let $x,y,z,w$ denote real numbers. 
-Let $m,n$ denote natural number.
+Let $x$ denote a real number.
+Let $n$ denote a natural number.
 
 \begin{signature}
 $\sumgeom{x}{n}$ is a real number.
@@ -3092,7 +3092,6 @@ a natural number. Then
 $\sumgeom{x}{n+1} = (\sumgeom{x}{n}) + x^{n}$.
 \end{axiom}
 
-[prover vampire]
 
 \begin{theorem} Let $x \neq 1$. Then
 $$\sumgeom{x}{n} = \frac{1 - x^{n}}{1 - x}$$
@@ -3110,24 +3109,23 @@ Take a natural number $m$ such that $m + 1 = n$.
 $m$ is inductively smaller than $m+1$ and
 $\sumgeom{x}{m} = \frac{1 - x^{m}}{1 - x}$.
 
-[prover eprover][timelimit 20]
-
-Then
-
+[timelimit 10]
+Let $a = x^{m}$ and $b = x^{n}$ and $c=1-x$.
+Then $a,b,c$ are real numbers and
 $\sumgeom{x}{n} =
 \frac{1 - x^{m}}{1 - x} + x^{m} = 
-\frac{1 - x^{m}}{1 - x} + \frac{(1-x)\cdot x^{m}}{1 - x} =
-\frac{1 - x^{m}}{1 - x} + \frac{x^{m}-(x \cdot x^{m})}{1 - x} =
-\frac{1 - x^{m}}{1 - x} + \frac{x^{m} - x^{n}}{1 - x} =
-\frac{(1 - x^{m}) + (x^{m} - x^{n})}{1 - x}$.
-
-[timelimit 3]
-
-$\frac{(1 - x^{m}) + (x^{m} - x^{n})}{1 - x} =
+\frac{1 - x^{m}}{1 - x} + \frac{x^{m} \cdot (1-x)}{1 - x} =
+\frac{1 - x^{m}}{1 - x} + \frac{(x^{m} \cdot 1) + (x^{m} \cdot (-x))}{1 - x} = 
+\frac{1 - x^{m}}{1 - x} + \frac{x^{m} + ((-x) \cdot x^{m})}{1 - x} =
+\frac{1 - x^{m}}{1 - x} + \frac{x^{m} + (-(x \cdot x^{m}))}{1 - x} =
+\frac{1 - x^{m}}{1 - x} + \frac{x^{m} - x^{n}}{1 - x} = 
+\frac{1 - a}{c} + \frac{a - b}{c} =
+\frac{(1 - a) + (a - b)}{c} = 
+\frac{((1 - a) + a) - b}{c} = 
+\frac{(1 + (-a + a)) - b}{c} =
+\frac{1 - b}{c} = 
 \frac{1 - x^{n}}{1 - x}$.
 
-Indeed
-$(1 - x^{m}) + (x^{m} - x^{n}) = (1 + (-x^{m} + x^{m})) - x^{n} = 1 - x^{n}$.
 \end{proof}
 \end{forthel}
 
