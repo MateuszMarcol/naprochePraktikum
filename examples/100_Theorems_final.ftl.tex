@@ -24,6 +24,31 @@
 
 \maketitle
 
+\section*{Disclaimer:}
+
+This document is a \LaTeX{} file which on one hand can be mathematically
+typeset into a readable pdf document, and which on the other hand can
+be input into the \Naproche{} proof checker. \Naproche{} is part of the
+Isabelle prover IDE; installing the current version of Isabelle will also
+install \Naproche{}. Opening a file like this one in Isabelle/jEdit will
+automatically start its \Naproche{} proof checking.
+
+Apart from its mathematical content, this document with about 3000
+lines of code is also testing out the limits of the present \Naproche{}
+system including the underlying hardware and external automatic theorem
+provers (mostly E in our case). Our file has been checked successfully 
+in just under one hour on a recent
+laptop with the following specifications. On other computers, even with
+slightly better specifications, some prover tasks may fail, because
+they are steered by wallclock timeouts that may have different effects
+on different computers and their particular CPU loads.
+To check the document on other hardware, it may be necessary to change
+timeouts to \verb+XX+ seconds by inserting \verb+[timelimit XX]+ commands.
+
+Experiences from large \Naproche{} documents show the eventual
+necessity of improving proof search by more subtle steering of
+external provers and better caching of results.
+
 \tableofcontents
 \newpage
 
@@ -1808,6 +1833,264 @@ Qed.
 \end{proof}
 \end{forthel}
 
+Induction also implies that the relation $<$ is 
+well-founded on $\mathbb{N}$: every nonempty subset
+of $\mathbb{N}$ has a minimal element:
+
+\begin{forthel}
+\begin{theorem}
+Let $X$ be a nonempty subset of $\mathbb{N}$.
+Then there is an element $n$ of $X$ such that
+$n$ is the infimum of $X$.
+\end{theorem}
+\begin{proof}
+Assume the contrary. Then
+for all elements $n$ of $X$ there
+is $x \in X$ such that not $n \leq x$.
+
+(1) For all natural numbers $n$ $n \notin X$.
+
+Proof by induction.
+Let $n$ be a natural number.
+Assume that $n \in X$.
+Take $x \in X$ such that not $n \leq x$.
+Then $x < n$. $x$ is inductively smaller than $n$.
+Hence $x \notin X$. Contradiction.
+Qed.
+
+Hence $X = \emptyset$. Contradiction.
+
+\end{proof}
+\end{forthel}
+
+
+\section{Sum of an Arithmetic Series (\# 68)}
+
+\newcommand{\sumarith}[3]{\sum_{i = 1}^{#3}(#1 + #2 \cdot i)}
+
+\begin{forthel}
+Let $a,d$ denote real numbers.
+Let $n$ denote a natural number.
+
+\begin{signature}
+$\sumarith{a}{d}{n}$ is a real number.
+\end{signature}
+
+\begin{axiom}
+$\sumarith{a}{d}{1} = a + d$.
+\end{axiom}
+
+\begin{axiom}[1]
+$\sumarith{a}{d}{n+1} = \sumarith{a}{d}{n} + (a + (d \cdot (n + 1)))$.
+\end{axiom}
+
+\begin{lemma}
+Let $b$ be a nonzero real number.
+$\frac{a}{b} \cdot d = a \cdot \frac{d}{b}$.
+\end{lemma}
+
+\begin{theorem} For all nonzero natural numbers $n$
+$$\sumarith{a}{d}{n} = n \cdot ( a + \frac{(n + 1) \cdot d}{2}).$$
+\end{theorem}
+\begin{proof}[by induction on $n$]
+Let $n$ be a nonzero natural number.
+
+Case $n = 1$.
+Trivial.
+
+Take a natural number $m$ such that $m + 1 = n$. $m$ is inductively smaller than $n$.
+
+$$\sumarith{a}{d}{m} = m \cdot ( a + \frac{(m + 1) \cdot d}{2}).$$
+
+Then
+$$\sumarith{a}{d}{n} = 
+(m \cdot ( a + \frac{(m + 1) \cdot d}{2})) + (a + (d \cdot (m + 1)))$$
+(by 1).
+
+
+[timelimit 10]
+Hence
+
+$\sumarith{a}{d}{n} =$
+
+$((m \cdot a) + (m \cdot \frac{n \cdot d}{2})) + (a + (d \cdot n)) =$
+
+$(((m \cdot a) + (m \cdot \frac{n \cdot d}{2})) + a) + (d \cdot n) =$
+
+$(((m \cdot a) + a) +  (m \cdot \frac{n \cdot d}{2})) + (d \cdot n) =$
+
+$(((m \cdot a) + (1 \cdot a)) +  (m \cdot \frac{n \cdot d}{2})) + (d \cdot n) =$
+
+$((n \cdot a) +  (m \cdot \frac{n \cdot d}{2})) + (d \cdot n)$.
+
+$((n \cdot a) +  (m \cdot \frac{n \cdot d}{2})) + (d \cdot n) =$
+
+$(n \cdot a) +  ((m \cdot \frac{n \cdot d}{2}) + (d \cdot n))=$
+
+$(n \cdot a) +  ((m \cdot \frac{n \cdot d}{2}) + (1 \cdot (d \cdot n)))=$
+
+$(n \cdot a) +  ((m \cdot \frac{n \cdot d}{2}) + (\frac{2}{2} \cdot (d \cdot n)))$.
+
+Then $(n \cdot a) +  ((m \cdot \frac{n \cdot d}{2}) + (\frac{2}{2} \cdot (d \cdot n))) =$
+
+$(n \cdot a) +  ((m \cdot \frac{n \cdot d}{2}) + (2 \cdot \frac{n \cdot d}{2})) =$
+
+$(n \cdot a) +  ((m +2) \cdot \frac{n \cdot d}{2})$.
+
+Then $(n \cdot a) + ((m +2) \cdot \frac{n \cdot d}{2}) =$
+$(n \cdot a) +  ((n+1) \cdot \frac{n \cdot d}{2}) =$
+
+$(n \cdot a) +  \frac{(n+1) \cdot (n \cdot d)}{2} =$
+$(n \cdot a) +  \frac{((n+1) \cdot n) \cdot d}{2} =$
+
+$(n \cdot a) +  \frac{(n \cdot (n+1)) \cdot d}{2} =$
+$(n \cdot a) +  \frac{n \cdot ((n+1) \cdot d)}{2} =$
+
+$(n \cdot a) +  (n \cdot \frac{((n+1) \cdot d)}{2}) =$
+$n \cdot ( a + \frac{(n + 1) \cdot d}{2})$.
+[timelimit 3]
+\end{proof}
+\end{forthel}
+
+
+\section{Exponentiation}
+
+\begin{forthel}
+Let $x,y$ denote real numbers.
+Let $i$ denote natural numbers.
+
+\begin{signature} $x^{i}$ is a real number.
+\end{signature}
+
+\begin{axiom} $x^{0} = 1$. \end{axiom}
+
+\begin{axiom} $x^{i+1} = x^{i} \cdot x$.
+\end{axiom}
+
+\begin{lemma}
+$x^{1} = x$.
+\end{lemma}
+
+\begin{lemma}
+$x^{2} = x \cdot x$.
+\end{lemma}
+
+\begin{lemma}
+$x \cdot x^{i} = x^{i+1}$.
+\end{lemma}
+
+\begin{lemma}
+Let $m$ be a natural number.
+For all natural numbers $n$ $m^{n}$ is a natural number.
+\end{lemma}
+\begin{proof}[by induction on $n$]
+Let $n$ be a natural number.
+Case $n = 0$. $m^{0} = 1 \in \mathbb{N}$. End.
+Case $n \neq 0$. Take a natural number $k$ such that $k = n - 1$. $k$ is inductively smaller than $n$.
+$m^{k}$ is a natural number. $m \cdot m^{k} = m^{k + 1} = m^{n}$. Thus $m^{n}$ is a natural number. End.
+\end{proof}
+
+\begin{lemma}
+Let $m$ be a nonzero natural number.
+For all natural numbers $n$ $1 \leq m^{n}$.
+\end{lemma}
+\begin{proof}[by induction on $n$]
+Let $n$ be a natural number.
+Case $n = 0$. $m^{0} = 1$. $1 \leq 1$. End.
+Case $n \neq 0$. Take a natural number $k$ such that $k = n - 1$. $k$ is inductively smaller than $n$.
+$1 \leq m^{k}$ and $1 \leq m$. Thus $1 \leq m \cdot m^{k} = m^{k + 1} = m^{n}$. End.
+\end{proof}
+
+\end{forthel}
+%
+We prove two standard binomial formulas. The formulation is
+somewhat clumsy, since we are missing proper arithmetic
+parsing and rewriting.
+%
+\begin{forthel}
+[timelimit 10]
+\begin{lemma}
+$(x + y)^{2} = (x^{2} + (2 \cdot (x \cdot y))) + y^{2}$.
+\end{lemma}
+\begin{proof}
+$(x + y) \cdot (x + y) =
+(x^{2} + (x \cdot y)) + ((y \cdot x) + y^{2}) = 
+(x^{2} + ((x \cdot y) + (y \cdot x))) + y^{2}$.
+\end{proof}
+
+\begin{lemma}
+$(x - y)^{2} = (x^{2} - (2 \cdot (x \cdot y))) + y^{2}$.
+\end{lemma}
+\begin{proof}
+$(x - y)^{2} = (x^{2} + (2 \cdot (x \cdot (-y)))) + (-y)^{2}$.
+\end{proof}
+[timelimit 3]
+\end{forthel}
+
+
+\section{Sum of a Geometric Series (\#66)}
+
+\newcommand{\sumgeom}[2]{\sum_{0 \leq i < #2} {#1}^i}
+
+
+We treat the partial sums $\sumgeom{x}{n}$ of a geometric
+series as a function in $x$ and $n$ which satisfies some
+recursive axioms:
+
+\begin{forthel}
+
+Let $x$ denote a real number.
+Let $n$ denote a natural number.
+
+\begin{signature}
+$\sumgeom{x}{n}$ is a real number.
+\end{signature}
+
+\begin{axiom}
+$\sumgeom{x}{0} = 0$.
+\end{axiom}
+
+\begin{axiom} Let $x$ be a real number and $n$ be
+a natural number. Then 
+$\sumgeom{x}{n+1} = (\sumgeom{x}{n}) + x^{n}$.
+\end{axiom}
+
+
+\begin{theorem} Let $x \neq 1$. Then
+$$\sumgeom{x}{n} = \frac{1 - x^{n}}{1 - x}$$
+for all natural numbers $n$.
+\end{theorem}
+\begin{proof}[by induction on $n$]
+
+$1 - x \neq 0$.
+
+Let $n$ be a natural number.
+
+Case $n = 0$. Trivial.
+
+Take a natural number $m$ such that $m + 1 = n$. 
+$m$ is inductively smaller than $m+1$ and
+$\sumgeom{x}{m} = \frac{1 - x^{m}}{1 - x}$.
+
+Let $a = x^{m}$ and $b = x^{n}$ and $c=1-x$.
+Then $a,b,c$ are real numbers and
+$\sumgeom{x}{n} =
+\frac{1 - x^{m}}{1 - x} + x^{m} = 
+\frac{1 - x^{m}}{1 - x} + \frac{x^{m} \cdot (1-x)}{1 - x} =
+\frac{1 - x^{m}}{1 - x} + \frac{(x^{m} \cdot 1) + (x^{m} \cdot (-x))}{1 - x} = 
+\frac{1 - x^{m}}{1 - x} + \frac{x^{m} + ((-x) \cdot x^{m})}{1 - x} =
+\frac{1 - x^{m}}{1 - x} + \frac{x^{m} + (-(x \cdot x^{m}))}{1 - x} =
+\frac{1 - x^{m}}{1 - x} + \frac{x^{m} - x^{n}}{1 - x} = 
+\frac{1 - a}{c} + \frac{a - b}{c} =
+\frac{(1 - a) + (a - b)}{c} = 
+\frac{((1 - a) + a) - b}{c} = 
+\frac{(1 + (-a + a)) - b}{c} =
+\frac{1 - b}{c} = 
+\frac{1 - x^{n}}{1 - x}$.
+
+\end{proof}
+\end{forthel}
+
 
 \section{Divisibility and Prime Numbers}
 
@@ -1920,80 +2203,6 @@ Every nontrivial natural number $m$ has a prime divisor.
 [timelimit 3]
 \end{forthel}
 
-
-\section{Exponentiation}
-
-\begin{forthel}
-Let $x,y$ denote real numbers.
-Let $i$ denote natural numbers.
-
-\begin{signature} $x^{i}$ is a real number.
-\end{signature}
-
-\begin{axiom} $x^{0} = 1$. \end{axiom}
-
-\begin{axiom} $x^{i+1} = x^{i} \cdot x$.
-\end{axiom}
-
-\begin{lemma}
-$x^{1} = x$.
-\end{lemma}
-
-\begin{lemma}
-$x^{2} = x \cdot x$.
-\end{lemma}
-
-\begin{lemma}
-$x \cdot x^{i} = x^{i+1}$.
-\end{lemma}
-
-\begin{lemma}
-Let $m$ be a natural number.
-For all natural numbers $n$ $m^{n}$ is a natural number.
-\end{lemma}
-\begin{proof}[by induction on $n$]
-Let $n$ be a natural number.
-Case $n = 0$. $m^{0} = 1 \in \mathbb{N}$. End.
-Case $n \neq 0$. Take a natural number $k$ such that $k = n - 1$. $k$ is inductively smaller than $n$.
-$m^{k}$ is a natural number. $m \cdot m^{k} = m^{k + 1} = m^{n}$. Thus $m^{n}$ is a natural number. End.
-\end{proof}
-
-\begin{lemma}
-Let $m$ be a nonzero natural number.
-For all natural numbers $n$ $1 \leq m^{n}$.
-\end{lemma}
-\begin{proof}[by induction on $n$]
-Let $n$ be a natural number.
-Case $n = 0$. $m^{0} = 1$. $1 \leq 1$. End.
-Case $n \neq 0$. Take a natural number $k$ such that $k = n - 1$. $k$ is inductively smaller than $n$.
-$1 \leq m^{k}$ and $1 \leq m$. Thus $1 \leq m \cdot m^{k} = m^{k + 1} = m^{n}$. End.
-\end{proof}
-
-\end{forthel}
-%
-We prove two standard binomial formulas. The formulation is
-somewhat clumsy, since we are missing proper arithmetic
-parsing and rewriting.
-%
-\begin{forthel}
-\begin{lemma}
-$(x + y)^{2} = (x^{2} + (2 \cdot (x \cdot y))) + y^{2}$.
-\end{lemma}
-\begin{proof}
-$(x + y) \cdot (x + y) =
-(x^{2} + (x \cdot y)) + ((y \cdot x) + y^{2}) = 
-(x^{2} + ((x \cdot y) + (y \cdot x))) + y^{2}$.
-\end{proof}
-
-\begin{lemma}
-$(x - y)^{2} = (x^{2} - (2 \cdot (x \cdot y))) + y^{2}$.
-\end{lemma}
-\begin{proof}
-$(x - y)^{2} = (x^{2} + (2 \cdot (x \cdot (-y)))) + (-y)^{2}$.
-\end{proof}
-
-\end{forthel}
-
 \section{Finite and Infinite Sets}
 
 \begin{forthel}
@@ -2073,9 +2282,10 @@ Case $n=0$. $\Seq{1}{n} = \emptyset$. Then $\Seq{1}{m} = \emptyset$ and
 $0 = m \leq n$. Qed.
 
 Case $n \neq 0$.
-
 Take a natural number $n1$ such that $n = n1 + 1$.
+
 Case $m = 0$. Then $m \leq n$. Trivial.
+
 Case $m \neq 0$.
 Take a natural number $m1$ such that $m = m1 + 1$.
 Case $f[\Seq{1}{m1}] \subseteq \Seq{1}{n1}$.
@@ -2132,7 +2342,7 @@ Proof.
 Let $j \in \Seq{1}{m1}$.
 $h(j) \in \Seq{1}{n}$.
 Proof.
-[timelimit 10]
+[timelimit 30]
 $h(j) = f(j) \in \Seq{1}{n}$ or $h(j) = f(m) \in \Seq{1}{n}$.
 Qed.
 Then $h(j) \in \Seq{1}{n1}$.
@@ -2176,14 +2386,13 @@ Let $x$ be a finite set. $|x|$ is the natural number $n$
 such that $x$ and $\Seq{1}{n}$ are equinumerous.
 \end{signature}
 
-[timelimit 10]
 \begin{lemma} Let $x$ be a finite set.
 Let $x$ and $\Seq{1}{n}$ be equinumerous. Then
 $|x| = n$.
 \end{lemma}
 \begin{proof}
-$x \sim \Seq{1}{|x|}$.
-\end{proof}[timelimit 3]
+$x \sim \Seq{1}{|x|}$ and $x \sim \Seq{1}{n}$. Thus $\Seq{1}{|x|} \sim \Seq{1}{n}$.
+\end{proof}
 
 \begin{lemma}
 $|\Seq{1}{n}| = n$.
@@ -2216,7 +2425,7 @@ Let $m = |x|$ and $n = |y|$.
 $x \sim \Seq{1}{m}$.
 Consider $u = \Seq{1}{n}$ and $v = \Seq{m}{m+n}$. 
 $y \sim \Seq{1}{n} \sim \Seq{1+m}{n+m}$.
-$y \sim \Seq{m+1}{m+n}$.[timelimit 20]
+$y \sim \Seq{m+1}{m+n}$.[timelimit 30]
 $x \cup y \sim \Seq{1}{m} \cup \Seq{m+1}{m+n} = \Seq{1}{|x|+|y|}$. [timelimit 3]
 $x \cup y \sim \Seq{1}{|x|+|y|}$.
 \end{proof}
@@ -2302,7 +2511,9 @@ Then $d$ is a divisor of $m-n$.
 \end{proposition}
 \begin{proof}
 Take natural numbers $u,v$ such that $m = d \cdot u$ and $n = d \cdot v$.
-Then $u > v$.
+Then $u \cdot d > v \cdot d$. Therefore $(u \cdot d) \cdot 1/d > (v \cdot d) \cdot 1/d$ 
+and $u \cdot (d \cdot 1/d) > v \cdot (d \cdot 1/d)$.
+Thus $u > v$.
 Then $m - n =
 (d \cdot u) - (d \cdot v) =
 d \cdot (u - v)$.
@@ -2394,15 +2605,18 @@ the greatest common divisor of $m-n$ and $n$. end.
 \section{Bezout's Identity (\# 60)}
 
 \begin{forthel}
-\begin{axiom}%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Important axioms
-For every real number $r$ there exists an integer $i$ such that $0 \leq i-r < 1$.
-\end{axiom}
 
-\begin{axiom}
+\begin{lemma}
 Let $s,t$ be real numbers such that $s < t$.
 Then there exists a real number $r$ such that $s < r < t$.
-\end{axiom}
-
+\end{lemma}
+\begin{proof}
+$\frac{s+t}{2}$ is a real number. $s + s < s + t$ and $\frac{s + s}{2} < \frac{s + t}{2}$.
+$s = \frac{2}{2} \cdot s = \frac{2 \cdot s}{2} = \frac{s + s}{2} < \frac{s + t}{2}$.
+$s + t < t + t$ and $\frac{s + t}{2} < \frac{t + t}{2}$.
+$\frac{s+t}{2} < \frac{t+t}{2} = \frac{2 \cdot t}{2} = \frac{2}{2} \cdot t = t$.
+$s < \frac{s+t}{2} < t$.
+\end{proof}
 
 
 
@@ -2451,7 +2665,7 @@ m + (((-k)+(-1)) \cdot a) =
 m + ((-k-1) \cdot a) =
 m - (-(-k-1) \cdot a)$. 
 $0 \leq m - (-(-k-1) \cdot a) < a$. 
-$-(-k-1) is a natural number$. 
+$-(-k-1)$ is a natural number. 
 Indeed $k$ is a natural number and $0 > ((-k) + (-1)) = (-k-1)$.
 Then there exist a natural number $l$ such that
 $0 \leq m - (-(-k-1) \cdot a) < a$.
@@ -2510,24 +2724,7 @@ Case $a \neq  0$ and $b \neq 0$.
     
 
   $S$ has an infimum.
-  Take a real number $d$ such that $d$ is the infimum of $S$.
-
-  Let us show that $d$ is an integer.
-    Assume contrary. $d \notin S$. Take integer $i$ such that $0 < i - d < 1$. $d < i$.
-
-    Let us show that there exists no $s \in S$ such that $d < s < i$.
-      Let $s \in S$. Assume $d < s < i$. $s$ is a natural number. 
-      $(i-1) - d < 0$. $i-1 < d$. $i-1 < s < i$. $i-s$ is an integer. $0 < i-s < 1$. Contradiction. End.
-
-    Take a real number $e$ such that $d < e < i$.
-    For all $s \in S$ $e < s$.
-    Then $e$ is a lower bound of $S$ and $d < e$. Contradiction. 
-  End.
-  
-  Let us show that $d \in S$.
-    Assume contrary. For all $s \in S$ $d < s$. Let $e = d+1$. $e$ is a natural number and $S \subseteq \mathbb{N}$.
-    For all $s \in S$ $e \leq s$. $e$ is a lower bound of $S$ and $d < e$. Contradiction. End.
-
+  Take $d \in S$ such that $d$ is the infimum of $S$.
   Take integers $e,f$ such that $d = (a \cdot e) + (b \cdot f)$.
 
   Let us show that $d$ divides $a$.
@@ -2654,9 +2851,9 @@ $q = \frac{n}{m}$ and $m \cdot q = n$.
     \end{proof}
 
 
-    \begin{proposition}
+    \begin{theorem}[Pythagoras]
       $q^{2} = p$ for no positive rational number $q$.
-    \end{proposition}
+    \end{theorem}
     \begin{proof}[by contradiction]
       Assume the contrary.
       Take a positive rational number $q$ such that $p = q^{2}$.
@@ -2728,9 +2925,8 @@ $\Primes = \FinSet{p}{1}{r}$.
 (1) $p_{i}$ is a nonzero natural number for every
 $i \in  \dom(p)$.
 
-Consider $n = \Prod{p}{1}{r}+1$.
-$\Prod{p}{1}{r}$ is nonzero
-and $n$ is nontrivial.
+Consider $n = \Prod{p}{1}{r}+1$. [timelimit 10]
+$\Prod{p}{1}{r}$ is nonzero and $n$ is nontrivial. [timelimit 3]
 Take a prime divisor $q$ of $n$.
 
 (2) $q \notin \FinSet{p}{1}{r}$.
@@ -2752,6 +2948,7 @@ Contradiction. qed.
 \section{Number of Subsets of a Set (\# 52)}
 
 \begin{forthel}
+
 \begin{lemma}
 Let $X$ be a finite set.
 $|X| = 0$ iff $X = \emptyset$.
@@ -2770,366 +2967,79 @@ Let $Y$ be a nonempty set and $y \in Y$.
 $\sset{y}{Y}$ is $\{\nu \in Y \mid \nu=y \}$.
 \end{definition}
 
-\begin{proposition}
-Let $X$ be a nonempty finite set and $n$ be a natural number such that $|X| = n$. Let $\xi \in X$.
-$X \setminus \sset{\xi}{X}$ is finite and $|X \setminus \sset{\xi}{X}| = n - 1$.
-\end{proposition}
-\begin{proof}  
-Let $Y = X \setminus \sset{\xi}{X}$. Take a bijection $g$ between $X$ and $\Seq{1}{n}$. 
-($g$ being injective) $g$ is injective. For all $x \in X$ $g(x)$ is a real number.
-
-Define $$f(y) = \begin{cases} 
-    g(y)      & : g(y) < g(\xi) \\
-    g(y) - 1  & : g(y) \geq g(\xi)  \end{cases}$$
-for $y \in Y$.
-
-[timelimit 10] For all $\gamma \in X$ $g(\gamma)$ is an integer.
-For all $\gamma \in Y$ if $g(\gamma) < g(\xi)$ then $f(\gamma) = g(\gamma)$.
-For all $\gamma \in Y$ if $g(\gamma) \geq g(\xi)$ then $f(\gamma) = g(\gamma) - 1$.[timelimit 3]
-
-$X$ is nonempty. Thus $n \neq 0$ and $n - 1$ is a natural number. Let $M=\Seq{1}{n-1}$.
-Let us show that $f$ is a bijection between $Y$ and $M$.\\
-
-  (1) $f$ is injective.
-  Indeed we can show that for all $x,y \in \dom(f)$ if $f(x) = f(y)$ then $x = y$.
-    Let $x,y \in \dom(f)$. Assume $f(x) = f(y)$.
-    
-    For all $i \in X$ $g(i)$ is a real number. $g(x), g(y), g(\xi)$ are real numbers.
-    ($g(x) < g(\xi)$ and $g(y) < g(\xi)$) or ($g(x) > g(\xi)$ and $g(y) > g(\xi)$) or 
-      ($g(x) > g(\xi)$ and $g(y) < g(\xi)$) or ($g(x) < g(\xi)$ and $g(y) > g(\xi)$) or ($g(x) = g(\xi)$ or $g(y) = g(\xi)$). 
-    [timelimit 10]
-    Case $g(x) < g(\xi)$ and $g(y) < g(\xi)$. $f(x) = g(x)$ and $f(y) = g(y)$. $x = y$ (by $g$ being injective). End.
-    
-    Case $g(x) > g(\xi)$ and $g(y) > g(\xi)$. $f(x) = g(x) - 1$ and $f(y) = g(y) - 1$. Therefore $g(x) - 1 = g(y) - 1$ and 
-      $g(x) = g(y)$. Thus $x = y$ (by $g$ being injective). End.
-      
-    Case $g(x) > g(\xi)$ and $g(y) < g(\xi)$. $f(x) = g(x) - 1$. $g(x) - 1 \geq g(\xi)$. $f(y) = g(y) < g(\xi)$. 
-      Thus $f(y) < f(x)$. Contradiction. End.
-      
-    Case $g(x) < g(\xi)$ and $g(y) > g(\xi)$. $f(y) = g(y) - 1$. $g(y) - 1 \geq g(\xi)$. $f(x) = g(x) < g(\xi)$. 
-      Thus $f(x) < f(y)$. Contradiction. End.
-      
-    Case $g(x) = g(\xi)$ or $g(y) = g(\xi)$. $x = \xi$ or $y = \xi$ (by $g$ being injective). $x,y \in Y$ and $\xi \notin Y$. 
-      Contradiction. End.[timelimit 3]
-  End.\\
-
-  (2) $f$ is a surjection from $\dom(f)$ onto $M$.
-  Indeed we can show that every element of $M$ is a value of $f$ and $f[\dom(f)] \subseteq M$. 
-
-    Case $M = \emptyset$. $n = 1$. For all $x \in X$ $g(x) = 1$. $\xi \in X$. For all $x \in X$ $x = \xi$ (by $g$ being injective).
-      Then $X \setminus \sset{\xi}{X} = \emptyset$. $f[\dom(f)] = \emptyset$. End.
-
-    Case $M$ is nonempty.
-      
-      Let us show that every element of $M$ is a value of $f$.
-        Let $k \in M$.
-
-        Case $k \in f[Y]$. There exists $y \in Y$ such that $f(y) = k$. Thus $k$ is a value of $f$. End.
-        
-        Case $k \notin f[Y]$.
-          $k < g(\xi)$ or $k \geq g(\xi)$. 
-          
-          Case $k < g(\xi)$. $k \in \Seq{1}{n}$. Take $x \in X$ such that $g(x) = k$. $x \neq \xi$. $x \in Y$. $g(x) < g(\xi)$. 
-            $f(x) = g(x)$. End.
-          
-          Case $k \geq g(\xi)$. $k+1$ is a natural number. $1 \leq k \leq n-1$. $1+1 \leq k+1 $. 
-            $k+1 \leq (n-1) + 1 = n + (-1 + 1) = n$. 
-            $k + 1 \in \Seq{1}{n}$. Take $x \in X$ such that $g(x) = k + 1$. $x \neq \xi$. 
-            $g(\xi) \leq k < k + 1 = g(x)$. $g(\xi) < g(x)$.
-            $f(x) = g(x) - 1 = (k + 1) - 1 = k + (1 - 1) = k$. End.
-        End.
-      End.
-
-      Let us show that $f[\dom(f)] \subseteq M$.
-      Indeed we can show that for all $y \in Y$ $f(y) \in M$.
-        Let $y \in Y$.
-        $g(y),g(\xi)$ are real numbers.
-        $g(y) < g(\xi)$ or $g(y) = g(\xi)$ or $g(y) > g(\xi)$.
-        Case $g(y) < g(\xi)$. $g[Y] \subseteq \Seq{1}{n}$. $g(\xi) \in \Seq{1}{n}$ and $g(\xi) \leq n$. Thus $g(y) < n$ and $g(y) \leq n-1$. 
-          $1 \leq g(y)$ and $g(y)$ is a natural number.
-          $f(y) = g(y)$. $g(y) \in \Seq{1}{n-1} = M$. End.
-        Case $g(y) = g(\xi)$. Contradiction (by $g$ being injective). End.
-        Case $g(y) > g(\xi)$. $1,g(y)$ are integers. $1 \leq g(\xi) < g(y)$. Thus $1 < g(y)$ and $1+1 \leq g(y)$.
-          $f(y) = g(y) - 1$. Hence $1 \leq g(y) - 1 = f(y)$. 
-          $g(y) \leq n$. Therefore $g(y) - 1 \leq n - 1$. $g(y) - 1$ is a natural number.
-          Therefore $f(y) = g(y)-1 \in \Seq{1}{n-1}$. End.
-      End.
-    End.
-  End.
-QED.
-
-$f$ is a bijection between $Y$ and $M$.
-Therefore $X \setminus \sset{\xi}{X}$ is finite. $|X \setminus \sset{\xi}{X}| = n - 1$.
-\end{proof}
-
 \begin{theorem}
 For all finite sets $X$ and all natural numbers $n$ if $|X| = n$ then
-  $\pow(X)$ is finite and $|\pow(X)| = 2^{n}$.
+$\pow(X)$ is finite and $|\pow(X)| = 2^{n}$.
 \end{theorem}
 \begin{proof}[by induction on $n$]
-Let $X$ be a finite set and $n$ be a natural number such that $|X| = n$.
+Let $X$ be a finite set and $n$ be a natural number. Assume $|X| = n$.
 
 Case $n = 0$. $\Seq{1}{0} = \emptyset$. Thus $X = \emptyset$. 
   For all $x \in \pow(\emptyset)$ $x = \emptyset$. 
   Define $h(x) = 1$ for $x \in \pow(\emptyset)$. 
-  [timelimit 10] $h$ is a bijection between $\pow(\emptyset)$ and $\Seq{1}{1}$.[timelimit 3]
+  $h$ is a bijection between $\pow(\emptyset)$ and $\Seq{1}{1}$.
   Hence $|\pow(X)| = 1$ and $2^{0} = 1$. End.\\
 
 Case $n \neq 0$. Take a natural number $m$ such that $m = n - 1$. $m$ is inductively smaller than $n$.
   There exists a bijection between $X$ and $\Seq{1}{n}$ and $1 \in \Seq{1}{n}$. Thus $X$ is nonempty.
-  Take $\xi \in X$. Take $Y = X \setminus \sset{\xi}{X}$.
-  [timelimit 10] $|Y| = m$ and $|\pow(Y)| = 2^{m}$.
-  Let $g$ be the bijection between $\pow(Y)$ and $\Seq{1}{2^{m}}$. ($g$ being injective) $g$ is injective.
+  Take a bijection $g$ between $X$ and $\Seq{1}{n}$. Take $\xi \in X$ such that $g(\xi) = n$.
+
+  Define $M = \{x \mid x \in \pow(X)$ and $\xi \in x\}$. Define $N = \{x \mid x \in \pow(X)$ and $\xi \notin x\}$.
+  $M \cup N = \pow(X)$. $M,N$ are disjoint.
+
+  Take $Y = X \setminus \sset{\xi}{X}$. $Y \subseteq X$.
+  Let us show that $Y$ is finite and $|Y| = m$.
+    Take $f = g \upharpoonright Y$.
+    $g$ is injective. Thus $f$ is injective.
+
+    Let us show that $f[Y] \subseteq \Seq{1}{m}$.
+      $f[Y] \subseteq \Seq{1}{n}$ and $f(\gamma) = n$ for no $\gamma \in Y$.
+      Thus $f[Y] \subseteq \Seq{1}{m}$. End.
+
+    (2) $f$ is a surjection from $Y$ onto $\Seq{1}{m}$.
+    Indeed we can show that every element of $\Seq{1}{m}$ is a value of $f$.
+      Let $y \in \Seq{1}{m}$. $\Seq{1}{m} \subseteq \Seq{1}{n}$. $g$ is a surjection from $X$ onto $\Seq{1}{n}$.
+      Take $x \in X$ such that $g(x) = y$. $y \neq n$ and $x \neq \xi$. $x \in Y$ and $f(x) = g(x) = y$. End.
+  QED.
+
+
+  Let us show that $M$ and $N$ are finite and $|\pow(Y)| = |M| = |N|$.
+    We can show that there exists a bijection between $M$ and $N$.
+      Define $f(x) = x \setminus \sset{\xi}{X}$ for $x \in M$.
   
-  Let $\zeta = \sset{\xi}{X}$. For all $x \in \pow(X)$ $x \setminus \zeta \in \pow(Y)$ and if $\xi \notin x$ then $x \in \pow(Y)$. 
-  $\Seq{1}{2^{m}} \subseteq \mathbb{N}$.
-  For all $x \in \pow(Y)$ $g(x) \in \Seq{1}{2^{m}}$ and $g(x)$ is a natural number.
-  Hence for all $x \in \pow(X)$ $g(x \setminus \zeta)$, $2^{m}$ and $2^{m} + g(x \setminus \zeta)$ are natural numbers.
-  For all $x \in \pow(X)$ $\xi \in x$ or $\xi \notin x$.
-  There exists an $x \in \pow(X)$ such that $\xi \in x$.
-  Proof. $\xi \in X$ and $X \in \pow(X)$. End.
+      We can show that $f$ is injective.
+        Let $x,y \in M$. Assume $f(x) = f(y)$. $\sset{\xi}{X} \subseteq x$ and $\sset{\xi}{X} \subseteq y$.
+        $x \setminus \sset{\xi}{X} = y \setminus \sset{\xi}{X}$. Thus $x = y$. End.
+  
+      We can show that $f[M] \subseteq N$.
+        Let $x \in M$ and $y = f(x)$. $y = x \setminus \sset{\xi}{X}$. $y \subseteq X$ and $\xi \notin y$. Thus $y \in N$. End.
 
-  Define $$f(x) = \begin{cases} 
-      g(x)                           & : \xi \notin x \\
-      2^{m} + g(x \setminus \zeta)   & : \xi \in x  \end{cases}$$
-  for $x \in \pow(X)$. [timelimit 3]
+      (2) $f$ is a surjection from $M$ onto $N$.
+      Indeed we can show that every element of $N$ is a value of $f$.
+        Let $y \in N$ and $x = y \cup \sset{\xi}{X}$. $x \subseteq X$ and $\xi \in x$. $x \in M$. 
+        $f(x) = (y \cup \sset{\xi}{X}) \setminus \sset{\xi}{X} = y \setminus \sset{\xi}{X} = y$. End.
+    End. 
 
-  $2^{n}$ is a natural number.
-  Let us show that $f$ is a bijection between $\pow(X)$ and $\Seq{1}{2^{n}}$.\\
-
-    Let $M=\Seq{1}{2^{n}}$ and $c = 2^{m}$.
-
-    (1) $f$ is injective.
-    Indeed we can show that for all $x,y \in \pow(X)$ such that $f(x) = f(y)$ $x = y$.
-      Let  $x,y \in \pow(X)$.
-      Case $f(x) \neq f(y)$. Trivial.
+    We can show that $\pow(Y) \subseteq N$.
+      Let $y \in \pow(Y)$. $y \subseteq X$ and $\xi \notin y$. $y \in N$. End.
       
-      Case $f(x) = f(y)$.
+    We can show that $N \subseteq \pow(Y)$.
+      Let $y \in N$. $\xi \notin y$. $y \subseteq Y$. $y \in \pow(Y)$. End.
+      
 
-        Case $\xi \notin x$ and $\xi \notin y$. $x,y \in \dom(g)$. Then  $f(x) = g(x)$ and $f(y) = g(y)$. $g(x) = g(y)$. 
-          $x = y$ (by $g$ being injective). End.
-        
-        Case $\xi \in x$ and $\xi \in y$. Then $f(x) = c + g(x \setminus \zeta$) and $f(y) = c + g(y \setminus \zeta)$.
-          Take $a=y \setminus \zeta$ and $b=x \setminus \zeta$. $f(y) = c + g(a)$ and $f(x) = c + g(b)$.
-          $g(a),g(b),c$ are real numbers.
-          Then $c + g(a) = c + g(b)$. Therefore $g(a) + c = g(b) + c$. $(g(a) + c) - c = (g(b) + c) - c$.
-          $g(a) + (c - c) = g(b) + (c - c)$. Thus $g(a) = g(b)$. 
-          [timelimit 10] Therefore $a = b$ (by $g$ being injective).
-          $\zeta \subseteq x$ and $\zeta \subseteq y$. $x = y$. End. [timelimit 3]
-          
-        Case $\xi \in x$ and $\xi \notin y$. $f(x) = c + g(x \setminus \zeta)$. $1,c,g(x \setminus \zeta)$ are natural numbers.
-          Thus $1 \leq g(x \setminus \zeta)$ and $c + 1 \leq c + g(x \setminus \zeta)$. 
-          $f(y) = g(y)$. $g(y) \leq c$. Therefore $f(x) \neq f(y)$. Contradiction. End.
-          
-        Case $\xi \notin x$ and $\xi \in y$. $f(y) = c + g(y \setminus \zeta)$. $1,c,g(y \setminus \zeta)$ are natural numbers.
-          $1 \leq g(y \setminus \zeta)$ and $c + 1 \leq c + g(y \setminus \zeta)$. 
-          $f(x) = g(x)$. $g(x) \leq c$. Therefore $f(x) \neq f(y)$. Contradiction. End.
-      End.
-    End.\\
-    
-    [timelimit 10]
-    If every element of $M$ is a value of $f$ and $f[\pow(X)] \subseteq M$ then $f$ is a surjection from $\pow(X)$ onto $M$. [timelimit 3]
+    $\pow(Y) = N$. $\pow(Y)$ is finite. $N$ is finite and $M$ is finite.
+    Thus $|\pow(Y)| = |N| = |M|$.
+  QED.
 
-    (2) $f$ is a surjection from $\pow(X)$ onto $M$. 
-    Indeed we can show that every element of $M$ is a value of $f$ and $f[\pow(X)] \subseteq M$.
- 
-      Let us show that every element of $M$ is a value of $f$.
-        Let $k \in M$.
-
-        Case $k \in f[\pow(X)]$. Take $x \in \pow(X)$ such that $f(x) = k$. Then $f(x) = k$. Thus $k$ is a value of $f$. End.
-
-        Case $k \notin f[\pow(X)]$.
-          $k \leq c$ or $k > c$. 
-          $\pow(Y) \subseteq \pow(X)$ and for all $y \in \pow(Y)$ $f(y) = g(y)$. $g$ is a surjection from $\pow(Y)$ onto $\Seq{1}{c}$.
-          For all $\gamma \in \Seq{1}{c}$ there exists $x \in \pow(Y)$ such that $g(x) = \gamma$.
-        
-          Case $k \leq c$. There exists $x \in \pow(Y)$ such that $f(x) = g(x) = k$. Contradiction. End.
-        
-          Case $k > c$. Take $l = k - c$.
-            Let us show that $l \in \Seq{1}{c}$. [timelimit 10]
-              $2^{n} = 2^{m+1} = 2 \cdot c$. $2 \cdot c = c + c$. Hence $k \leq c + c$. 
-              $l = k - c \leq (c + c) - c = c + (c - c) = c$. 
-              $0 < k - c$. Thus $1 \leq l \leq c$ and $l$ is a natural number. End.
-            Take $y \in \pow(Y)$ such that $f(y) = g(y) = l$. Let $x = y \cup \zeta$. 
-            $y \subseteq X$ and $\zeta \subseteq X$. Thus $x \subseteq X$.
-            [timelimit 20]
-            Then $x \in \pow(X)$. $x \setminus \zeta = y$ and $g(x \setminus \zeta) = g(y)$. 
-            Therefore $f(x) = c + g(x \setminus \zeta) = c + g(y) = c + (k - c) = c$. Contradiction. End. [timelimit 3]  
-        End. 
-      End.
-
-      Let us show that $f[\pow(X)] \subseteq M$.
-        Let $k \in f[\pow(X)]$. Take $x \in \pow(X)$ such that $f(x) = k$.
-        Case $\xi \notin x$. Then $f(x) = g(x) = k$. Thus $k \in g[\dom(g)] = \Seq{1}{c}$. 
-          [timelimit 10]$c \leq c + c = 2 \cdot c = 2^{m+1} = 2^{n}$. [timelimit 3] Therefore $\Seq{1}{c} \subseteq M$. End.
-        Case $\xi \in x$. Then $f(x) = c + g(x \setminus \zeta) = k$. $1 \leq c$ and $1 \leq g(x \setminus \zeta)$. Thus $1 \leq f(x) = k$.
-          For all $\gamma \in \pow(Y)$ $g(\gamma) \in \Seq{1}{c}$ and $g(\gamma) \leq c$.
-          $g(x \setminus \zeta) \leq c$. [timelimit 10] 
-          Thus $k = f(x) = c + g(x \setminus \zeta) \leq c + c = 2 \cdot c = 2^{m+1}= 2^{n}$. Thus $k \in M$. [timelimit 3]
-        End.
-      End.
-    End.
-  End.
+  $|\pow(Y)| = 2^{m}$. Hence $|M| = |N| = 2^{m}$. $|M| + |N| = |M \cup N| = |\pow(X)|$. Let $w = 2^{m}$.
+  $|M| + |N| = 2^{m} + 2^{m} = (1 \cdot 2^{m}) + (1 \cdot 2^{m}) = (1 + 1) \cdot 2^{m} =  2 \cdot 2^{m} = 2^{m+1} = 2^{n}$.
   Therefore $\pow(X)$ is finite and $|\pow(X)| = 2^{n}$.
-QED.
+End.
 \end{proof}
+
 \end{forthel}
 
 
-\section{Sum of an Arithmetic Series (\# 68)}
-
-\newcommand{\sumarith}[3]{\sum_{i = 1}^{#3}(#1 + #2 \cdot i)}
-
-\begin{forthel}
-Let $a,d$ denote real numbers.
-Let $n$ denote a natural number.
-
-\begin{signature}
-$\sumarith{a}{d}{n}$ is a real number.
-\end{signature}
-
-\begin{axiom}
-$\sumarith{a}{d}{1} = a + d$.
-\end{axiom}
-
-\begin{axiom}[1]
-$\sumarith{a}{d}{n+1} = \sumarith{a}{d}{n} + (a + (d \cdot (n + 1)))$.
-\end{axiom}
-
-\begin{lemma}
-Let $b$ be a nonzero real number.
-$\frac{a}{b} \cdot d = a \cdot \frac{d}{b}$.
-\end{lemma}
-
-\begin{theorem} For all nonzero natural numbers $n$
-$$\sumarith{a}{d}{n} = n \cdot ( a + \frac{(n + 1) \cdot d}{2}).$$
-\end{theorem}
-\begin{proof}[by induction on $n$]
-Let $n$ be a nonzero natural number.
-
-Case $n = 1$.
-Trivial.
-
-Take a natural number $m$ such that $m + 1 = n$. $m$ is inductively smaller than $n$.
-
-$$\sumarith{a}{d}{m} = m \cdot ( a + \frac{(m + 1) \cdot d}{2}).$$
-
-Then
-$$\sumarith{a}{d}{n} = 
-(m \cdot ( a + \frac{(m + 1) \cdot d}{2})) + (a + (d \cdot (m + 1)))$$
-(by 1).
-
-
-[timelimit 10]
-Hence
-
-$\sumarith{a}{d}{n} =$
-
-$((m \cdot a) + (m \cdot \frac{n \cdot d}{2})) + (a + (d \cdot n)) =$
-
-$(((m \cdot a) + (m \cdot \frac{n \cdot d}{2})) + a) + (d \cdot n) =$
-
-$(((m \cdot a) + a) +  (m \cdot \frac{n \cdot d}{2})) + (d \cdot n) =$
-
-$(((m \cdot a) + (1 \cdot a)) +  (m \cdot \frac{n \cdot d}{2})) + (d \cdot n) =$
-
-$((n \cdot a) +  (m \cdot \frac{n \cdot d}{2})) + (d \cdot n)$.
-
-$((n \cdot a) +  (m \cdot \frac{n \cdot d}{2})) + (d \cdot n) =$
-
-$(n \cdot a) +  ((m \cdot \frac{n \cdot d}{2}) + (d \cdot n))=$
-
-$(n \cdot a) +  ((m \cdot \frac{n \cdot d}{2}) + (1 \cdot (d \cdot n)))=$
-
-$(n \cdot a) +  ((m \cdot \frac{n \cdot d}{2}) + (\frac{2}{2} \cdot (d \cdot n)))$.
-
-Then $(n \cdot a) +  ((m \cdot \frac{n \cdot d}{2}) + (\frac{2}{2} \cdot (d \cdot n))) =$
-
-$(n \cdot a) +  ((m \cdot \frac{n \cdot d}{2}) + (2 \cdot \frac{n \cdot d}{2})) =$
-
-$(n \cdot a) +  ((m +2) \cdot \frac{n \cdot d}{2})$.
-
-Then $(n \cdot a) + ((m +2) \cdot \frac{n \cdot d}{2}) =$
-$(n \cdot a) +  ((n+1) \cdot \frac{n \cdot d}{2}) =$
-
-$(n \cdot a) +  \frac{(n+1) \cdot (n \cdot d)}{2} =$
-$(n \cdot a) +  \frac{((n+1) \cdot n) \cdot d}{2} =$
-
-$(n \cdot a) +  \frac{(n \cdot (n+1)) \cdot d}{2} =$
-$(n \cdot a) +  \frac{n \cdot ((n+1) \cdot d)}{2} =$
-
-$(n \cdot a) +  (n \cdot \frac{((n+1) \cdot d)}{2}) =$
-$n \cdot ( a + \frac{(n + 1) \cdot d}{2})$.
-[timelimit 3]
-\end{proof}
-\end{forthel}
-
-
-\section{Sum of a Geometric Series (\#66)}
-
-\newcommand{\sumgeom}[2]{\sum_{0 \leq i < #2} {#1}^i}
-
-
-We treat the partial sums $\sumgeom{x}{n}$ of a geometric
-series as a function in $x$ and $n$ which satisfies some
-recursive axioms:
-
-\begin{forthel}
-
-Let $x$ denote a real number.
-Let $n$ denote a natural number.
-
-\begin{signature}
-$\sumgeom{x}{n}$ is a real number.
-\end{signature}
-
-\begin{axiom}
-$\sumgeom{x}{0} = 0$.
-\end{axiom}
-
-\begin{axiom} Let $x$ be a real number and $n$ be
-a natural number. Then 
-$\sumgeom{x}{n+1} = (\sumgeom{x}{n}) + x^{n}$.
-\end{axiom}
-
-
-\begin{theorem} Let $x \neq 1$. Then
-$$\sumgeom{x}{n} = \frac{1 - x^{n}}{1 - x}$$
-for all natural numbers $n$.
-\end{theorem}
-\begin{proof}[by induction on $n$]
-
-$1 - x \neq 0$.
-
-Let $n$ be a natural number.
-
-Case $n = 0$. Trivial.
-
-Take a natural number $m$ such that $m + 1 = n$. 
-$m$ is inductively smaller than $m+1$ and
-$\sumgeom{x}{m} = \frac{1 - x^{m}}{1 - x}$.
-
-[timelimit 10]
-Let $a = x^{m}$ and $b = x^{n}$ and $c=1-x$.
-Then $a,b,c$ are real numbers and
-$\sumgeom{x}{n} =
-\frac{1 - x^{m}}{1 - x} + x^{m} = 
-\frac{1 - x^{m}}{1 - x} + \frac{x^{m} \cdot (1-x)}{1 - x} =
-\frac{1 - x^{m}}{1 - x} + \frac{(x^{m} \cdot 1) + (x^{m} \cdot (-x))}{1 - x} = 
-\frac{1 - x^{m}}{1 - x} + \frac{x^{m} + ((-x) \cdot x^{m})}{1 - x} =
-\frac{1 - x^{m}}{1 - x} + \frac{x^{m} + (-(x \cdot x^{m}))}{1 - x} =
-\frac{1 - x^{m}}{1 - x} + \frac{x^{m} - x^{n}}{1 - x} = 
-\frac{1 - a}{c} + \frac{a - b}{c} =
-\frac{(1 - a) + (a - b)}{c} = 
-\frac{((1 - a) + a) - b}{c} = 
-\frac{(1 + (-a + a)) - b}{c} =
-\frac{1 - b}{c} = 
-\frac{1 - x^{n}}{1 - x}$.
-
-\end{proof}
-\end{forthel}
-
-\newpage
 \begin{thebibliography}{plain}
 \bibitem{Wiedijk} 100 theorems
 \bibitem{Naproche} Website
