@@ -5,9 +5,6 @@
 
 \begin{document}
 
-%%% In Zeile 2400 sind 2 Axiome. Sind die akzeptabel oder sollte man das irgendwie noch ändern?
-%%% \gcdd als greatest common divisor. Kurzer Text zu vielleicht?
-
 \newcommand{\Prod}[3]{#1_{#2} \cdots #1_{#3}}
 \newcommand{\Seq}[2]{\{#1,\dots,#2\}}
 \newcommand{\FinSet}[3]{\{#1_{#2},\dots,#1_{#3}\}}
@@ -17,10 +14,12 @@
 \newcommand{\inv}[1]{#1^{-1}}
 \newcommand{\sset}[2]{\{#1\}_{#2}}
 
-\title{Formalizing Sets, Numbers, and some of Wiedijk's
+\title{Formalizing Sets and Numbers, and some of Wiedijk's
 "100 Theorems" in \Naproche{}}
 
-\author{Peter Koepke, Mateusz Marcol and Patrick Schäfer}
+\author{Peter Koepke, Mateusz Marcol and Patrick Schäfer\\
+\emph{Mathematical Institute, University of Bonn, Germany}
+}
 
 \maketitle
 
@@ -54,25 +53,33 @@ external provers and better caching of results.
 
 \section{Introduction}
 
-The \Naproche{} system (for Natural Proof Checking)
+The \Naproche{} system (for \emph{Natural Proof Checking})
 checks the logical correctness of texts
-written in an input language which ideally reads
-like common mathematical language. Proofs and their 
+written in an input language ForTheL (for \emph{Formula Theory Language})
+which ideally reads like common mathematical language. Proofs and proof 
 structures should resemble the
 style of undergraduate textbooks. 
-\Naproche is a natural proof assistant intended to
+\Naproche{} is a \emph{natural proof assistant} intended to
 approximate and support ordinary mathematical practices.
 The inbuilt ontology of \Naproche{} corresponds to classical foundations
 of mathematics in first-order logic and set theory.
 
-This text serves several purposes: to demonstrate the 
-\Naproche{} concept including its
-input language ForTheL within a longer formalization;
-to lay a logical and set-theoretical foundation for
+\Naproche{} is included in the Isabelle prover environment: installing Isabelle
+also installs \Naproche{}; opening files with a \verb+.ftl+ or \verb+.ftl.tex+
+extension in Isabelle/jEdit automatically activates proof-checking by \Naproche{},
+with feedback through the standard output buffer, highlighting, and
+pop-up windows. The \Naproche{} installation contains a small library of
+formalization examples. The current document is one of the examples, available
+in \verb+.ftl.tex+ format for proof-checking and \LaTeX{} typesetting, and
+as a typeset \verb+.pdf+ file.
+
+This document serves several purposes: to demonstrate the 
+\Naproche{} concept  within a longer formalization;
+to propose a logical and set-theoretical foundation for
 number systems in a build-up of mathematical notions
 with sets and classes, maps, relations and numbers;
 to prove several theorems from the well-known list of 100 theorems
-that F. Wiedijk has proposed as formalization benchmarks.
+that F. Wiedijk has proposed as formalization benchmarks \cite{Wiedijk}.
  
 In our approach the ordered field $\mathbb{R}$ of real numbers
 is postulated axiomatically. We then construe the structures of integer and
@@ -87,26 +94,53 @@ that real addition and multiplication
 can be {\em restricted} to those substructures, instead of {\em extending} operations
 to larger superstructures.
 
+We list the ten "Wiedijk Theorems" contained in this document and
+the authors of the respective formalizations. Most formalizations build on
+earlier versions, also by other authors, some are inherited from 
+\Naproche's predecessor system
+SAD (for \emph{System for Automated Deduction}) by A. Paskevich 
+and others \cite{SAD}. 
+\begin{itemize}
+\item \#1: The Irrationality of the Square Root of 2\\
+Naproche formalization: Peter Koepke, Mateusz Marcol and Patrick Schäfer
+\item \#11: The Infinitude of Primes\\
+Peter Koepke
+\item \#25: The Schröder-Bernstein Theorem\\
+Peter Koepke, Marcel Schütz
+\item \#52: Number of Subsets of a Set\\
+Patrick Schäfer
+\item \#60: Bezout's Identity\\
+Mateusz Marcol, Patrick Schäfer
+\item \#63: Cantor's Theorem\\
+Peter Koepke
+\item \#66: Sum of a Geometric Series\\
+Peter Koepke
+\item \#66: Sum of an Arithmetic Series\\
+Peter Koepke
+\item \#69: Greatest Common Divisor Algorithm\\
+Mateusz Marcol, Patrick Schäfer
+\item \#74: The Principle of Mathematical Induction\\
+Peter Koepke
+\end{itemize}
+We shall continue to extend and improve the formalizations and upload
+new versions for inclusion into future releases of Isabelle.
+
 We view the present state of \Naproche{} and this paper as proof of 
 concept for interactive theorem
 proving with natural language formalizations. 
 To extend \Naproche{} to a powerful comprehensive
-system like Mizar or Isabelle is in principle possible, 
-given sufficient resources.
-We think, however, that it is more promising to equip big existing
+system like Mizar or Isabelle should in principle be possible, 
+given sufficient time and manpower.
+We think, however, that it is more promising to equip established
 system with a natural language interface by adapting 
 \Naproche's translation techniques
-from natural language texts into formal logics.
-
-
-... This paper ... Contributions of other formalizers, formalizations
-have evolved, partially going back to Andrei Paskevich.
+from natural mathematical language texts into formal logics.
 
 \section{Basic Notions}
 
 Some notions and their elementary properties are already
 built into \Naproche{} and its input language 
-ForTheL (for Formula Theory Language). There are
+ForTheL. There are
 mathematical {\em objects}, and {\em sets} and 
 {\em classes} that contain mathematical
 objects. Sets are classes which are objects themselves and
@@ -124,7 +158,7 @@ foundations of mathematics. This is also advantageous
 for automated proving since it prevents proof searches to
 dig into mathematically irrelevant internal structurings.
 
-We begin by fixing some useful mathematical language. 
+We begin by fixing some mathematical language. 
 We import singular/plural forms of words that will be used in
 our formalizations (\path{examples/vocabulary.ftl.tex}).
 In the long run this should be replaced by
@@ -144,8 +178,7 @@ lemmas that illustrate the \Naproche{} ontology.
 Later we shall postulate further axioms known from the
 set theories of Kelley-Morse or Zermelo-Fraenkel.
 
-The notions of set and class are built into the
-logic of \Naproche{}. They capture the naive intuition
+The notions of set and class capture the naive intuition
 of set expressed by Georg Cantor:
 %
 \begin{quotation}
@@ -159,9 +192,6 @@ that classes are built and determined by their
 elements which are mathematical objects.
 
 \begin{forthel}
-%[prove off][check off]
-
-\begin{lemma} Let $x$ be set. Then $x = x$. \end{lemma}
 
 \begin{proposition}
 Let $X$ be a class. Let $x$ be an element of $X$.
@@ -527,8 +557,7 @@ Many classes defined in mathematics are considered to be
 mathematical objects that can be used freely in further constructions.
 We defined sets to be classes that are objects. However, we cannot
 identify {\em all} classes with sets due to the famous 
-Russell's paradox (Bertrand Russell,
-{\em The Principles of Mathematics}, Cambridge 1903, {\S}100).
+Russell's paradox \cite{Russell}.
 The proof is based on the important {\em diagonal argument}.
 
 \begin{forthel}
@@ -546,13 +575,16 @@ Indeed if $R$ is a set then $$R \in R \iff R \notin R.$$
 As a reaction to Russell's theorem, Ernst Zermelo, Abraham
 Fraenkel and others have formulated axioms which 
 postulate explicitly that certain classes are sets. We
-present the standard Zermelo-Fraenkel axioms without
+present the standard axioms without
 the axioms of infinity, choice and foundation. The infinity
 axiom will be introduced later by requiring that the 
 (infinite) class
 of natural numbers is a set. The axioms of choice 
 and foundation are not needed for our presentation.
-To list all our set-theoretic axioms, we begin by restating
+Note that the axiomatic strength introduced here corresponds
+to Kelley-Morse set theory, since classes can be formed using
+formulas with class quantifiers.
+We begin by restating
 the axiom of extensionality.
 
 \begin{forthel}
@@ -661,6 +693,10 @@ that as an axiom.
 
 \section{Cantor's Theorem (\#63)}
 
+Despite its technical simplicity, Cantor's Theorem is the origin of
+infinitary and uncountable set theory. The diagonal argument of
+its proof has become a powerful and standard proof principle mainly
+in foundational theories.
 
 \begin{forthel}
     \begin{theorem*}[Cantor]
@@ -681,12 +717,9 @@ that as an axiom.
 
 \section{The Knaster-Tarski Fixed Point Theorem}
 
-The Knaster-Tarski theorem is an important result in lattice theory
-(Alfred Tarski (1955). "A lattice-theoretical fixpoint theorem and its applications". 
-Pacific Journal of Mathematics. 5:2: 285–309, and
-B. Knaster (1928). "Un théorème sur les fonctions d'ensembles". 
-Ann. Soc. Polon. Math. 6: 133–134. With A. Tarski). We prove the theorem for 
-the $\subseteq$-relation on sets, to apply it
+The Knaster-Tarski theorem is an important result in lattice theory \cite{Tarski, Knaster}.
+We prove the theorem for 
+the $\subseteq$-relation on sets, in order to apply it
 in the subsequent section.
 
  \begin{forthel}
@@ -1550,7 +1583,7 @@ Let us show that $b - 1$ is an upper bound of $\mathbb{Z}$.
 Let $x \in \mathbb{Z}$. $x + 1 \in \mathbb{Z}$.
 $x + 1 \leq b$.
 $x = (x + 1) - 1 \leq b - 1$.
-end.
+End.
 \end{proof}
 
 \begin{theorem}
@@ -1679,8 +1712,9 @@ $n = 0$ or $n = m + 1$ for some natural number $m$.
 \end{lemma}
 \begin{proof}
 Case $n = 0$. Trivial.
-$n \neq 0$. Let $m = n - 1$. $m$ is a natural number and
-$n = m + 1$.
+
+Case $n \neq 0$. Let $m = n - 1$. $m$ is a natural number and
+$n = m + 1$. End.
 \end{proof}
 
 \begin{lemma}
@@ -1746,7 +1780,7 @@ $a > b$. Then $-a < -b$. $-a + 1 \leq -b$. $-(-a + 1) \geq -(-b)$. $a - 1 \geq b
 \end{proof}
 \end{forthel}
 
-\section{The Principle of Mathematical Induction (\# 74)}
+\section{The Principle of Mathematical Induction (\#74)}
 
 We prove the second-order Peano axiom for all subsets of $\mathbb{N}$.
 This implies the principle of {\em complete induction}: to prove a 
@@ -1771,20 +1805,20 @@ Let us show that every element of $\mathbb{N}$ is an element of $A$.
 	Let us show that $a+1$ is a lower bound of $F$.
 		Let $x \in F$. $x - 1 \in \mathbb{Z}$.
 
-		Case $x - 1 < 0$. Then $0 < x < 1$. Contradiction. end.
+		Case $x - 1 < 0$. Then $0 < x < 1$. Contradiction. End.
 
-		Case $x - 1 = 0$. Then $x = 1$ and $1 \notin A$. Contradiction. end.
+		Case $x - 1 = 0$. Then $x = 1$ and $1 \notin A$. Contradiction. End.
 
 		Case $x - 1 > 0$. Then $x - 1 \in \mathbb{N}$.
       $x - 1 \notin A$. Indeed $(x - 1) + 1 = x \notin A$. $x - 1 \in F$.
 			$a \leq x - 1$.
 			$a + 1 \leq (x - 1) + 1 = x$.
-		end.
-	end.
+		End.
+	End.
 
 	Then $a+1 > a$.
 	Contradiction.
-end.
+End.
 \end{proof}
 \end{forthel}
 %
@@ -1864,7 +1898,7 @@ Hence $X = \emptyset$. Contradiction.
 \end{forthel}
 
 
-\section{Sum of an Arithmetic Series (\# 68)}
+\section{Sum of an Arithmetic Series (\#68)}
 
 \newcommand{\sumarith}[3]{\sum_{i = 1}^{#3}(#1 + #2 \cdot i)}
 
@@ -1985,7 +2019,9 @@ For all natural numbers $n$ $m^{n}$ is a natural number.
 \end{lemma}
 \begin{proof}[by induction on $n$]
 Let $n$ be a natural number.
+
 Case $n = 0$. $m^{0} = 1 \in \mathbb{N}$. End.
+
 Case $n \neq 0$. Take a natural number $k$ such that $k = n - 1$. $k$ is inductively smaller than $n$.
 $m^{k}$ is a natural number. $m \cdot m^{k} = m^{k + 1} = m^{n}$. Thus $m^{n}$ is a natural number. End.
 \end{proof}
@@ -1996,7 +2032,9 @@ For all natural numbers $n$ $1 \leq m^{n}$.
 \end{lemma}
 \begin{proof}[by induction on $n$]
 Let $n$ be a natural number.
+
 Case $n = 0$. $m^{0} = 1$. $1 \leq 1$. End.
+
 Case $n \neq 0$. Take a natural number $k$ such that $k = n - 1$. $k$ is inductively smaller than $n$.
 $1 \leq m^{k}$ and $1 \leq m$. Thus $1 \leq m \cdot m^{k} = m^{k + 1} = m^{n}$. End.
 \end{proof}
@@ -2068,6 +2106,7 @@ Let $n$ be a natural number.
 
 Case $n = 0$. Trivial.
 
+Case $n \neq 0$.
 Take a natural number $m$ such that $m + 1 = n$. 
 $m$ is inductively smaller than $m+1$ and
 $\sumgeom{x}{m} = \frac{1 - x^{m}}{1 - x}$.
@@ -2086,7 +2125,7 @@ $\sumgeom{x}{n} =
 \frac{((1 - a) + a) - b}{c} = 
 \frac{(1 + (-a + a)) - b}{c} =
 \frac{1 - b}{c} = 
-\frac{1 - x^{n}}{1 - x}$.
+\frac{1 - x^{n}}{1 - x}$. End.
 
 \end{proof}
 \end{forthel}
@@ -2143,6 +2182,7 @@ Then there exists a natural number $l$ such that $n \cdot l = m$.
 \end{lemma}
 \begin{proof}
 Case $n = 0$. Then $m = 0$. $0$ is a natural number and $n \cdot 0 = m$. End.
+
 Case $n \neq 0$.
 Take an integer $l$ such that $n \cdot l = m$.
 Assume $l$ is not a natural number.
@@ -2203,244 +2243,6 @@ Every nontrivial natural number $m$ has a prime divisor.
 [timelimit 3]
 \end{forthel}
 
-\section{Finite and Infinite Sets}
-
-\begin{forthel}
-Let $m,n,k$ denote natural numbers.
-
-\begin{definition}
-$\Seq{m}{n}$ is the class of
-natural numbers $i$ such that $m \leq i \leq n$.
-\end{definition}
-
-\begin{lemma}
-$\Seq{m}{n}$ is a set.
-\end{lemma}
-
-\begin{lemma} 
-Assume that $m \leq n \leq k$.
-Then $\Seq{m}{n} \cup \Seq{n+1}{k} = \Seq{m}{k}$.
-\end{lemma}
-\begin{proof}
-$\Seq{m}{k} \subseteq \Seq{m}{n} \cup \Seq{n+1}{k}$.
-Proof.
-Let $x \in \Seq{m}{k}$. $x$ is an integer. 
-$x \leq n$ or $n+1 \leq x$. Proof. Assume the contrary. Then $n < x < n+1$. $0 < x - n < 1$. End.
-$x \in \Seq{m}{n}$ or $x \in \Seq{n+1}{k}$. End.
-\end{proof}
-
-
-\begin{lemma} Assume that $m \leq n \leq k$.
-Then $\Seq{m}{n}$ and $\Seq{n+1}{k}$ are disjoint.
-\end{lemma}
-
-\begin{lemma} Let $x \in \Seq{1}{n+1} \setminus \Seq{1}{n}$.
-Then $x = n+1$.
-\end{lemma}
-\begin{proof}
-$x$ is an integer.
-$x \leq n+1$. Not $x \leq n$.
-Assume that $x \neq n+1$.
-$n < x < n+1$.
-$0 < x - n < 1$.
-\end{proof}
-
-Let $S$ denote a class.
-
-\begin{definition}
-$S$ is finite iff $S$ and $\Seq{1}{n}$ are equinumerous for some 
-natural number $n$.
-\end{definition}
-
-\begin{lemma}
-Let $S$ be finite. Then $S$ is a set.
-\end{lemma}
-\begin{proof}
-Take a natural number $n$ such that $S$ and $\Seq{1}{n}$ are equinumerous.
-Take a bijection $f$ between $\Seq{1}{n}$ and $S$.
-Then $\Seq{1}{n}$ is a set and $S = f[\Seq{1}{n}]$.
-\end{proof}
-\end{forthel}
-%
-We show that the number $n$ in the definition is uniquely
-determined.
-%
-\begin{forthel}
-
-\begin{lemma}
-For all natural numbers $n$
-for all natural numbers $m$
-for all injective maps $f$ from 
-$\Seq{1}{m}$ to $\Seq{1}{n}$ we have $m \leq n$.
-\end{lemma}
-\begin{proof}[by induction on $n$]
-Let $n$ be a natural number.
-Let $m$ be a natural number.
-Let $f$ be an injective map from $\Seq{1}{m}$ to $\Seq{1}{n}$.
-
-Case $n=0$. $\Seq{1}{n} = \emptyset$. Then $\Seq{1}{m} = \emptyset$ and 
-$0 = m \leq n$. Qed.
-
-Case $n \neq 0$.
-Take a natural number $n1$ such that $n = n1 + 1$.
-
-Case $m = 0$. Then $m \leq n$. Trivial.
-
-Case $m \neq 0$.
-Take a natural number $m1$ such that $m = m1 + 1$.
-Case $f[\Seq{1}{m1}] \subseteq \Seq{1}{n1}$.
-Let $g = f \upharpoonright \Seq{1}{m1}$.
-Let $C = \Seq{1}{m1}$. Let $D = \Seq{1}{n1}$.
-$f \upharpoonright \Seq{1}{m1}$ is an injective map.
-$\dom(f \upharpoonright \Seq{1}{m1}) = \Seq{1}{m1}$.
-$f[\Seq{1}{m1}] \subseteq \Seq{1}{n1}$.
-$g$ is a map
-from $C$ to $D$.
- $f \upharpoonright \Seq{1}{m1}$ is an injective map
-from $\Seq{1}{m1}$ to $\Seq{1}{n1}$.
-$n1$ is inductively smaller than $n$.
-$m1 \leq n1$. $m \leq n$. Qed.
-Not $f[\Seq{1}{m1}] \subseteq \Seq{1}{n1}$.
-Take $w \in f[\Seq{1}{m1}]$ such that $w \notin \Seq{1}{n1}$.
-$w \in f[\Seq{1}{m1}] \subseteq f[\Seq{1}{m}] \subseteq \Seq{1}{n}$.
-$w \in \Seq{1}{n1+1} \setminus \Seq{1}{n1}$.
-$w = n$.
-Take $i \in \Seq{1}{m1}$ such that $f(i) = w$.
-Define
-\[h(j) =
-  \begin{cases}
-  f(j)  & : j \neq i \\
-  f(m) & : j = i
-  \end{cases} \]
-for $j \in \Seq{1}{m1}$.
-
-$h$ is a map. $\dom(h) = \Seq{1}{m1}$. 
-
-$h$ is injective.
-Proof.
-Let $j,k$ be distinct elements of $\Seq{1}{m1}$.
-Let us show that $h(j) \neq h(k)$.
-Case $j = i$.
-Then $k \neq i$. $k \neq m$.
-$h(j) = f(m) \neq f(k) = h(k)$.
-Qed.
-Case $k = i$.
-Then $j \neq i$. $j \neq m$.
-$h(j) = f(j) \neq f(m) = h(k)$.
-Qed.
-Then $j \neq i$ and $k \neq i$.
-$h(j) = f(j) \neq f(k) = h(k)$.
-Qed.
-Qed.
-
-
-
-
-
-$h[\Seq{1}{m1}] \subseteq \Seq{1}{n1}$.
-Proof.
-Let $j \in \Seq{1}{m1}$.
-$h(j) \in \Seq{1}{n}$.
-Proof.
-[timelimit 30]
-$h(j) = f(j) \in \Seq{1}{n}$ or $h(j) = f(m) \in \Seq{1}{n}$.
-Qed.
-Then $h(j) \in \Seq{1}{n1}$.
-Proof.[timelimit 20]
-  Case $j = i$.
-  Then $h(j) = f(m) \neq f(i) = w = n$.
-  Qed.
-  Then $j \neq i$.
-  Then $h(j) = f(j) \neq f(i) = n$.
-
-Qed.[timelimit 3]
-
-Qed.
-
-
-
-
-$h$ is an injective map from $\Seq{1}{m1}$ to $\Seq{1}{n1}$. 
-
-$n1$ is inductively smaller than $n$.
-$m1 \leq n1$. $m \leq n$.
-
-Qed.
-Qed.
-\end{proof}
-
-
-\begin{lemma}
-Let $n,m$ be natural numbers and
-$\Seq{1}{m} \sim \Seq{1}{n}$. Then $m = n$.
-\end{lemma}
-\begin{proof}
-There is an injective map from 
-$\Seq{1}{m}$ to $\Seq{1}{n}$ and
-there is an injective map from 
-$\Seq{1}{n}$ to $\Seq{1}{m}$. Then $m \leq n \leq m$.
-\end{proof}
-
-\begin{signature}
-Let $x$ be a finite set. $|x|$ is the natural number $n$
-such that $x$ and $\Seq{1}{n}$ are equinumerous.
-\end{signature}
-
-\begin{lemma} Let $x$ be a finite set.
-Let $x$ and $\Seq{1}{n}$ be equinumerous. Then
-$|x| = n$.
-\end{lemma}
-\begin{proof}
-$x \sim \Seq{1}{|x|}$ and $x \sim \Seq{1}{n}$. Thus $\Seq{1}{|x|} \sim \Seq{1}{n}$.
-\end{proof}
-
-\begin{lemma}
-$|\Seq{1}{n}| = n$.
-\end{lemma}
-
-\begin{lemma}
-Let $n,m,i$ be natural numbers.
-Then $\Seq{m}{n} \sim \Seq{m+i}{n+i}$.
-\end{lemma}
-\begin{proof}
-Define \[ H(k) = k + i \]
-        for $k \in \Seq{m}{n}$.
-$H$ is a map from $\Seq{m}{n}$ to $\Seq{m+i}{n+i}$.
-$H$ is injective.
-$H$ is a surjection from $\Seq{m}{n}$ onto $\Seq{m+i}{n+i}$.
-Proof.
-Let $u \in \Seq{m+i}{n+i}$. $m + i \leq u \leq n + i$.
-$m  = (m + i) - i \leq u - i \leq (n + i) - i = n$.
-Hence $u - i \in \Seq{m}{n}$. $H(u-i) = u$ and 
-$u \in H[\Seq{m}{n}]$.
-Qed.
-\end{proof}
-
-\begin{lemma}
-Let $x,y$ be disjoint finite sets.
-Then $x \cup y$ is a finite set and $|x \cup y| = |x| + |y|$.
-\end{lemma}
-\begin{proof}
-Let $m = |x|$ and $n = |y|$.
-$x \sim \Seq{1}{m}$.
-Consider $u = \Seq{1}{n}$ and $v = \Seq{m}{m+n}$. 
-$y \sim \Seq{1}{n} \sim \Seq{1+m}{n+m}$.
-$y \sim \Seq{m+1}{m+n}$.[timelimit 30]
-$x \cup y \sim \Seq{1}{m} \cup \Seq{m+1}{m+n} = \Seq{1}{|x|+|y|}$. [timelimit 3]
-$x \cup y \sim \Seq{1}{|x|+|y|}$.
-\end{proof}
-
-
-\begin{definition}
-$S$ is infinite iff $S$ is not finite.
-\end{definition}
-
-\begin{definition}
-$S$ is denumerable iff $S$ and $\mathbb{N}$ are equinumerous.
-\end{definition}
-\end{forthel}
-
-
 \section{The Greatest Common Divisor}
 
 \begin{forthel}
@@ -2468,8 +2270,10 @@ $z$ is the greatest common divisor of $z$ and $0$ or $-z$ is the greatest common
 \end{lemma}
 \begin{proof}
 Let $d$ be the greatest common divisor of $z$ and $0$.
+
 Case $z$ is a natural number. $z$ is a common divisor of $z$ and $0$. 
   Then $d$ divides $z$. $z$ divides $d$. Thus $z = d$. End.
+  
 Case $z$ is not a natural number. Then $-z$ is a natural number and $-z$ is the greatest common divisor of $-z$ and $0$.
   $-z$ is a common divisor of $z$ and $0$. Then $-z$ divides $d$ and $d$ divides $-z$. $d = -z$.
 End.
@@ -2500,7 +2304,7 @@ Then $d$ divides $n$. $n$ divides $d$. $d = n$.
 
 
 
-\section{Greatest Common Divisor Algorithm (\# 69)}
+\section{Greatest Common Divisor Algorithm (\#69)}
 
 \begin{forthel}
 
@@ -2539,6 +2343,7 @@ is the greatest common divisor of $m-n$ and $n$.
 \end{lemma}
 \begin{proof}
 Case n=0. Trivial.
+
 Case n > 0.
 Let $l$ be the greatest common divisor of $m$ and $n$ 
 and $k$ be the greatest common divisor of $m-n$ and $n$.
@@ -2584,7 +2389,9 @@ For all natural numbers $m,n$ the greatest common divisor of $m$ and $n$ is $\gc
 \begin{proof}[by induction on $m+n$]
 Let $m,n$ be natural numbers.
 Then $m+n$ is a natural number.
+
 Case $m + n =0$. Trivial.
+
 Case $m + n > 0$.
 If $m=0$ or $n=0$ then $\gcd(m,n)$ is 
 the greatest common divisor of $m$ and $n$.
@@ -2597,12 +2404,12 @@ and the greatest common divisor of $m$ and $n$ is $\gcd(m,n)$. [timelimit 3]
 If $m > n$ then $(m-n) + n$ is inductively smaller than $m + n$ and
 $\gcd(m,n) = \gcd(m-n,n)$ and 
 the greatest common divisor of $m$ and $n$ is 
-the greatest common divisor of $m-n$ and $n$. end.
+the greatest common divisor of $m-n$ and $n$. End.
 \end{proof}
 \end{forthel}
 
 
-\section{Bezout's Identity (\# 60)}
+\section{Bezout's Identity (\#60)}
 
 \begin{forthel}
 
@@ -2630,8 +2437,9 @@ a natural number $k$ such that $0 \leq m - (k \cdot a) < a$.
 \end{proposition}
 \begin{proof}[by induction on $m$]
 Let $m$ be a natural number.
+
 Case $m = 0$.
-$0 \leq 0 - (0 \cdot a) < a$.end.
+$0 \leq 0 - (0 \cdot a) < a$. End.
 
 Case $m > 0$. Let $\mu = m-1$.
 $\mu$ is a natural number and $\mu$ is inductively smaller than $m$.
@@ -2651,7 +2459,7 @@ $(m-1) - (k \cdot a) > a - 1$.
 $c > a-1$.
 Then $c \geq a$.
 Contradiction.
-end.
+End.
 
 Case $m - (k \cdot a) = a$. 
 $k$ is a natural number.
@@ -2669,14 +2477,14 @@ $-(-k-1)$ is a natural number.
 Indeed $k$ is a natural number and $0 > ((-k) + (-1)) = (-k-1)$.
 Then there exist a natural number $l$ such that
 $0 \leq m - (-(-k-1) \cdot a) < a$.
-end.
+End.
 
 Case $m - (k \cdot a) < a$. Let $\nu = -(k \cdot a)$.
 $0 \leq \mu + \nu < m + \nu$. 
 $0 \leq m - (k \cdot a)$.
 Then $k$ is a natural number such that
-$0 \leq  m - (k \cdot a) < a$.end.
-end. 
+$0 \leq  m - (k \cdot a) < a$. End.
+End. 
 \end{proof}
 
 \begin{lemma}
@@ -2702,6 +2510,7 @@ $\delta = (a \cdot x) + (b \cdot y)$.
 Case $a = 0$. The greatest common divisor of $b$ and $a$ is equal to $\delta$.
   Then $\delta = b$ or $\delta = -b$. 1 and -1 are integers. 
   If $\delta = b$ then $\delta = (a \cdot 1) + (b \cdot 1)$. If $\delta = -b$ then $\delta = (a \cdot 1) + (b \cdot -1)$. End. 
+
 Case $b = 0$. Then $\delta = a$ or $\delta = -a$. 1 and -1 are integers. 
   If $\delta = a$ then $\delta = (a \cdot 1) + (b \cdot 1)$. If $\delta = -a$ then $\delta = (a \cdot -1) + (b \cdot 1)$. End. 
 
@@ -2771,13 +2580,13 @@ Case $a \neq  0$ and $b \neq 0$.
   
   Therefore $d = \delta$ and
   there exist integers $i,j$ such that $\delta = (a \cdot i) + (b \cdot j)$.
-end.
+End.
 \end{proof}
 
 \end{forthel}
 
 
-\section{Irrationality of Roots of Prime Numbers (\# 1)}
+\section{Irrationality of Roots of Prime Numbers (\#1)}
 
 \begin{forthel}
 
@@ -2869,7 +2678,345 @@ $q = \frac{n}{m}$ and $m \cdot q = n$.
     \end{proof}
   \end{forthel}
 
-\section{Finite Sums and Products}
+  \section{Finite and Infinite Sets}
+  
+  \begin{forthel}
+  Let $m,n,k$ denote natural numbers.
+  
+  \begin{definition}
+  $\Seq{m}{n}$ is the class of
+  natural numbers $i$ such that $m \leq i \leq n$.
+  \end{definition}
+  
+  \begin{lemma}
+  $\Seq{m}{n}$ is a set.
+  \end{lemma}
+  
+  \begin{lemma} 
+  Assume that $m \leq n \leq k$.
+  Then $\Seq{m}{n} \cup \Seq{n+1}{k} = \Seq{m}{k}$.
+  \end{lemma}
+  \begin{proof}
+  $\Seq{m}{k} \subseteq \Seq{m}{n} \cup \Seq{n+1}{k}$.
+  Proof.
+  Let $x \in \Seq{m}{k}$. $x$ is an integer. 
+  $x \leq n$ or $n+1 \leq x$. Proof. Assume the contrary. Then $n < x < n+1$. $0 < x - n < 1$. End.
+  $x \in \Seq{m}{n}$ or $x \in \Seq{n+1}{k}$. End.
+  \end{proof}
+  
+  
+  \begin{lemma} Assume that $m \leq n \leq k$.
+  Then $\Seq{m}{n}$ and $\Seq{n+1}{k}$ are disjoint.
+  \end{lemma}
+  
+  \begin{lemma} Let $x \in \Seq{1}{n+1} \setminus \Seq{1}{n}$.
+  Then $x = n+1$.
+  \end{lemma}
+  \begin{proof}
+  $x$ is an integer.
+  $x \leq n+1$. Not $x \leq n$.
+  Assume that $x \neq n+1$.
+  $n < x < n+1$.
+  $0 < x - n < 1$.
+  \end{proof}
+  
+  Let $S$ denote a class.
+  
+  \begin{definition}
+  $S$ is finite iff $S$ and $\Seq{1}{n}$ are equinumerous for some 
+  natural number $n$.
+  \end{definition}
+  
+  \begin{lemma}
+  Let $S$ be finite. Then $S$ is a set.
+  \end{lemma}
+  \begin{proof}
+  Take a natural number $n$ such that $S$ and $\Seq{1}{n}$ are equinumerous.
+  Take a bijection $f$ between $\Seq{1}{n}$ and $S$.
+  Then $\Seq{1}{n}$ is a set and $S = f[\Seq{1}{n}]$.
+  \end{proof}
+  \end{forthel}
+  %
+  We show that the number $n$ in the definition is uniquely
+  determined.
+  %
+  \begin{forthel}
+  
+  \begin{lemma}
+  For all natural numbers $n$
+  for all natural numbers $m$
+  for all injective maps $f$ from 
+  $\Seq{1}{m}$ to $\Seq{1}{n}$ we have $m \leq n$.
+  \end{lemma}
+  \begin{proof}[by induction on $n$]
+  Let $n$ be a natural number.
+  Let $m$ be a natural number.
+  Let $f$ be an injective map from $\Seq{1}{m}$ to $\Seq{1}{n}$.
+  
+  Case $n=0$. $\Seq{1}{n} = \emptyset$. Then $\Seq{1}{m} = \emptyset$ and 
+  $0 = m \leq n$. Qed.
+  
+  Case $n \neq 0$.
+  Take a natural number $n1$ such that $n = n1 + 1$.
+  
+  Case $m = 0$. Then $m \leq n$. Trivial.
+  
+  Case $m \neq 0$.
+  Take a natural number $m1$ such that $m = m1 + 1$.
+  
+  Case $f[\Seq{1}{m1}] \subseteq \Seq{1}{n1}$.
+  Let $g = f \upharpoonright \Seq{1}{m1}$.
+  Let $C = \Seq{1}{m1}$. Let $D = \Seq{1}{n1}$.
+  $f \upharpoonright \Seq{1}{m1}$ is an injective map.
+  $\dom(f \upharpoonright \Seq{1}{m1}) = \Seq{1}{m1}$.
+  $f[\Seq{1}{m1}] \subseteq \Seq{1}{n1}$.
+  $g$ is a map
+  from $C$ to $D$.
+   $f \upharpoonright \Seq{1}{m1}$ is an injective map
+  from $\Seq{1}{m1}$ to $\Seq{1}{n1}$.
+  $n1$ is inductively smaller than $n$.
+  $m1 \leq n1$. $m \leq n$. Qed.
+  Not $f[\Seq{1}{m1}] \subseteq \Seq{1}{n1}$.
+  Take $w \in f[\Seq{1}{m1}]$ such that $w \notin \Seq{1}{n1}$.
+  $w \in f[\Seq{1}{m1}] \subseteq f[\Seq{1}{m}] \subseteq \Seq{1}{n}$.
+  $w \in \Seq{1}{n1+1} \setminus \Seq{1}{n1}$.
+  $w = n$.
+  Take $i \in \Seq{1}{m1}$ such that $f(i) = w$.
+  Define
+  \[h(j) =
+    \begin{cases}
+    f(j)  & : j \neq i \\
+    f(m) & : j = i
+    \end{cases} \]
+  for $j \in \Seq{1}{m1}$.
+  
+  $h$ is a map. $\dom(h) = \Seq{1}{m1}$. 
+  
+  $h$ is injective.
+  Proof.
+  Let $j,k$ be distinct elements of $\Seq{1}{m1}$.
+  Let us show that $h(j) \neq h(k)$.
+  
+  Case $j = i$.
+  Then $k \neq i$. $k \neq m$. [timelimit 10]
+  $h(j) = f(m) \neq f(k) = h(k)$. [timelimit 3]
+  Qed.
+  
+  Case $k = i$.
+  Then $j \neq i$. $j \neq m$.
+  $h(j) = f(j) \neq f(m) = h(k)$.
+  Qed.
+  Then $j \neq i$ and $k \neq i$.
+  $h(j) = f(j) \neq f(k) = h(k)$.
+  Qed.
+  Qed.
+  
+  
+  
+  
+  
+  $h[\Seq{1}{m1}] \subseteq \Seq{1}{n1}$.
+  Proof.
+  Let $j \in \Seq{1}{m1}$.
+  $h(j) \in \Seq{1}{n}$.
+  Proof.
+  [timelimit 30]
+  $h(j) = f(j) \in \Seq{1}{n}$ or $h(j) = f(m) \in \Seq{1}{n}$.
+  Qed.
+  
+  Then $h(j) \in \Seq{1}{n1}$.
+  Proof.[timelimit 20]
+    Case $j = i$.
+    Then $h(j) = f(m) \neq f(i) = w = n$.
+    End.
+    Then $j \neq i$.
+    Then $h(j) = f(j) \neq f(i) = n$.
+  
+  Qed.[timelimit 3]
+  
+  Qed.
+  
+  
+  
+  
+  $h$ is an injective map from $\Seq{1}{m1}$ to $\Seq{1}{n1}$. 
+  
+  $n1$ is inductively smaller than $n$.
+  $m1 \leq n1$. $m \leq n$.
+  
+  Qed.
+  Qed.
+  \end{proof}
+  
+  
+  \begin{lemma}
+  Let $n,m$ be natural numbers and
+  $\Seq{1}{m} \sim \Seq{1}{n}$. Then $m = n$.
+  \end{lemma}
+  \begin{proof}
+  There is an injective map from 
+  $\Seq{1}{m}$ to $\Seq{1}{n}$ and
+  there is an injective map from 
+  $\Seq{1}{n}$ to $\Seq{1}{m}$. Then $m \leq n \leq m$.
+  \end{proof}
+  
+  \begin{signature}
+  Let $x$ be a finite set. $|x|$ is the natural number $n$
+  such that $x$ and $\Seq{1}{n}$ are equinumerous.
+  \end{signature}
+  
+  \begin{lemma} Let $x$ be a finite set.
+  Let $x$ and $\Seq{1}{n}$ be equinumerous. Then
+  $|x| = n$.
+  \end{lemma}
+  \begin{proof}
+  $x \sim \Seq{1}{|x|}$ and $x \sim \Seq{1}{n}$. Thus $\Seq{1}{|x|} \sim \Seq{1}{n}$.
+  \end{proof}
+  
+  \begin{lemma}
+  $|\Seq{1}{n}| = n$.
+  \end{lemma}
+  
+  \begin{lemma}
+  Let $n,m,i$ be natural numbers.
+  Then $\Seq{m}{n} \sim \Seq{m+i}{n+i}$.
+  \end{lemma}
+  \begin{proof}
+  Define \[ H(k) = k + i \]
+          for $k \in \Seq{m}{n}$.
+  $H$ is a map from $\Seq{m}{n}$ to $\Seq{m+i}{n+i}$.
+  $H$ is injective.
+  $H$ is a surjection from $\Seq{m}{n}$ onto $\Seq{m+i}{n+i}$.
+  Proof.
+  Let $u \in \Seq{m+i}{n+i}$. $m + i \leq u \leq n + i$.
+  $m  = (m + i) - i \leq u - i \leq (n + i) - i = n$.
+  Hence $u - i \in \Seq{m}{n}$. $H(u-i) = u$ and 
+  $u \in H[\Seq{m}{n}]$.
+  Qed.
+  \end{proof}
+  
+  \begin{lemma}
+  Let $x,y$ be disjoint finite sets.
+  Then $x \cup y$ is a finite set and $|x \cup y| = |x| + |y|$.
+  \end{lemma}
+  \begin{proof}
+  Let $m = |x|$ and $n = |y|$.
+  $x \sim \Seq{1}{m}$.
+  Consider $u = \Seq{1}{n}$ and $v = \Seq{m}{m+n}$. 
+  $y \sim \Seq{1}{n} \sim \Seq{1+m}{n+m}$.
+  $y \sim \Seq{m+1}{m+n}$.[timelimit 30]
+  $x \cup y \sim \Seq{1}{m} \cup \Seq{m+1}{m+n} = \Seq{1}{|x|+|y|}$. [timelimit 3]
+  $x \cup y \sim \Seq{1}{|x|+|y|}$.
+  \end{proof}
+  
+  
+  \begin{definition}
+  $S$ is infinite iff $S$ is not finite.
+  \end{definition}
+  
+  \begin{definition}
+  $S$ is denumerable iff $S$ and $\mathbb{N}$ are equinumerous.
+  \end{definition}
+  \end{forthel}
+
+
+  \section{Number of Subsets of a Set (\#52)}
+  
+  \begin{forthel}
+  
+  \begin{lemma}
+  Let $X$ be a finite set.
+  $|X| = 0$ iff $X = \emptyset$.
+  \end{lemma}
+  \begin{proof}
+  Let us show that if $|X| = 0$ then $X = \emptyset$.
+    Assume $|X| = 0$ and there exists an $x \in X$.
+    Take $x \in X$ and bijection $g$ between $X$ and $\Seq{1}{0}$. Then $g(x) \in \Seq{1}{0} = \emptyset$. Contradiction. End.
+  
+  If $X = \emptyset$ then $|X| = 0$. 
+  \end{proof}
+  
+  
+  \begin{definition}
+  Let $Y$ be a nonempty set and $y \in Y$. 
+  $\sset{y}{Y}$ is $\{\nu \in Y \mid \nu=y \}$.
+  \end{definition}
+  
+  \begin{theorem}
+  For all finite sets $X$ and all natural numbers $n$ if $|X| = n$ then
+  $\pow(X)$ is finite and $|\pow(X)| = 2^{n}$.
+  \end{theorem}
+  \begin{proof}[by induction on $n$]
+  Let $X$ be a finite set and $n$ be a natural number. Assume $|X| = n$.
+  
+  Case $n = 0$. $\Seq{1}{0} = \emptyset$. Thus $X = \emptyset$. 
+    For all $x \in \pow(\emptyset)$ $x = \emptyset$. 
+    Define $h(x) = 1$ for $x \in \pow(\emptyset)$. 
+    $h$ is a bijection between $\pow(\emptyset)$ and $\Seq{1}{1}$.
+    Hence $|\pow(X)| = 1$ and $2^{0} = 1$. End.\\
+  
+  Case $n \neq 0$. Take a natural number $m$ such that $m = n - 1$. $m$ is inductively smaller than $n$.
+    There exists a bijection between $X$ and $\Seq{1}{n}$ and $1 \in \Seq{1}{n}$. Thus $X$ is nonempty.
+    Take a bijection $g$ between $X$ and $\Seq{1}{n}$. Take $\xi \in X$ such that $g(\xi) = n$.
+  
+    Define $M = \{x \mid x \in \pow(X)$ and $\xi \in x\}$. Define $N = \{x \mid x \in \pow(X)$ and $\xi \notin x\}$.
+    $M \cup N = \pow(X)$. $M,N$ are disjoint.
+  
+    Take $Y = X \setminus \sset{\xi}{X}$. $Y \subseteq X$.
+    Let us show that $Y$ is finite and $|Y| = m$.
+      Take $f = g \upharpoonright Y$.
+      $g$ is injective. Thus $f$ is injective.
+  
+      Let us show that $f[Y] \subseteq \Seq{1}{m}$.
+        $f[Y] \subseteq \Seq{1}{n}$ and $f(\gamma) = n$ for no $\gamma \in Y$.
+        Thus $f[Y] \subseteq \Seq{1}{m}$. End.
+  
+      (2) $f$ is a surjection from $Y$ onto $\Seq{1}{m}$.
+      Indeed we can show that every element of $\Seq{1}{m}$ is a value of $f$.
+        Let $y \in \Seq{1}{m}$. $\Seq{1}{m} \subseteq \Seq{1}{n}$. $g$ is a surjection from $X$ onto $\Seq{1}{n}$.
+        Take $x \in X$ such that $g(x) = y$. $y \neq n$ and $x \neq \xi$. $x \in Y$ and $f(x) = g(x) = y$. End.
+    QED.
+  
+  
+    Let us show that $M$ and $N$ are finite and $|\pow(Y)| = |M| = |N|$.
+      We can show that there exists a bijection between $M$ and $N$.
+        Define $f(x) = x \setminus \sset{\xi}{X}$ for $x \in M$.
+    
+        We can show that $f$ is injective.
+          Let $x,y \in M$. Assume $f(x) = f(y)$. $\sset{\xi}{X} \subseteq x$ and $\sset{\xi}{X} \subseteq y$.
+          $x \setminus \sset{\xi}{X} = y \setminus \sset{\xi}{X}$. Thus $x = y$. End.
+    
+        We can show that $f[M] \subseteq N$.
+          Let $x \in M$ and $y = f(x)$. $y = x \setminus \sset{\xi}{X}$. $y \subseteq X$ and $\xi \notin y$. Thus $y \in N$. End.
+  
+        (2) $f$ is a surjection from $M$ onto $N$.
+        Indeed we can show that every element of $N$ is a value of $f$.
+          Let $y \in N$ and $x = y \cup \sset{\xi}{X}$. $x \subseteq X$ and $\xi \in x$. $x \in M$. 
+          $f(x) = (y \cup \sset{\xi}{X}) \setminus \sset{\xi}{X} = y \setminus \sset{\xi}{X} = y$. End.
+      End. 
+  
+      We can show that $\pow(Y) \subseteq N$.
+        Let $y \in \pow(Y)$. $y \subseteq X$ and $\xi \notin y$. $y \in N$. End.
+        
+      We can show that $N \subseteq \pow(Y)$.
+        Let $y \in N$. $\xi \notin y$. $y \subseteq Y$. $y \in \pow(Y)$. End.
+        
+  
+      $\pow(Y) = N$. $\pow(Y)$ is finite. $N$ is finite and $M$ is finite.
+      Thus $|\pow(Y)| = |N| = |M|$.
+    QED.
+  
+    $|\pow(Y)| = 2^{m}$. Hence $|M| = |N| = 2^{m}$. $|M| + |N| = |M \cup N| = |\pow(X)|$. Let $w = 2^{m}$.
+    $|M| + |N| = 2^{m} + 2^{m} = (1 \cdot 2^{m}) + (1 \cdot 2^{m}) = (1 + 1) \cdot 2^{m} =  2 \cdot 2^{m} = 2^{m+1} = 2^{n}$.
+    Therefore $\pow(X)$ is finite and $|\pow(X)| = 2^{n}$.
+  End.
+  \end{proof}
+  
+  \end{forthel}
+  
+  
+
+\section{Finite Products}
 
 \begin{forthel}
 
@@ -2904,7 +3051,7 @@ $F(i)$ divides $\Prod{F}{1}{n}$ for every $i \in \dom(F)$.
 
 \end{forthel}
 
-\section{The Infinitude of Primes (\# 11)}
+\section{The Infinitude of Primes (\#11)}
 
 \begin{forthel}
 
@@ -2944,108 +3091,28 @@ Contradiction. qed.
 \end{proof}
 \end{forthel}
 
-
-\section{Number of Subsets of a Set (\# 52)}
-
-\begin{forthel}
-
-\begin{lemma}
-Let $X$ be a finite set.
-$|X| = 0$ iff $X = \emptyset$.
-\end{lemma}
-\begin{proof}
-Let us show that if $|X| = 0$ then $X = \emptyset$.
-  Assume $|X| = 0$ and there exists an $x \in X$.
-  Take $x \in X$ and bijection $g$ between $X$ and $\Seq{1}{0}$. Then $g(x) \in \Seq{1}{0} = \emptyset$. Contradiction. End.
-
-If $X = \emptyset$ then $|X| = 0$. 
-\end{proof}
-
-
-\begin{definition}
-Let $Y$ be a nonempty set and $y \in Y$. 
-$\sset{y}{Y}$ is $\{\nu \in Y \mid \nu=y \}$.
-\end{definition}
-
-\begin{theorem}
-For all finite sets $X$ and all natural numbers $n$ if $|X| = n$ then
-$\pow(X)$ is finite and $|\pow(X)| = 2^{n}$.
-\end{theorem}
-\begin{proof}[by induction on $n$]
-Let $X$ be a finite set and $n$ be a natural number. Assume $|X| = n$.
-
-Case $n = 0$. $\Seq{1}{0} = \emptyset$. Thus $X = \emptyset$. 
-  For all $x \in \pow(\emptyset)$ $x = \emptyset$. 
-  Define $h(x) = 1$ for $x \in \pow(\emptyset)$. 
-  $h$ is a bijection between $\pow(\emptyset)$ and $\Seq{1}{1}$.
-  Hence $|\pow(X)| = 1$ and $2^{0} = 1$. End.\\
-
-Case $n \neq 0$. Take a natural number $m$ such that $m = n - 1$. $m$ is inductively smaller than $n$.
-  There exists a bijection between $X$ and $\Seq{1}{n}$ and $1 \in \Seq{1}{n}$. Thus $X$ is nonempty.
-  Take a bijection $g$ between $X$ and $\Seq{1}{n}$. Take $\xi \in X$ such that $g(\xi) = n$.
-
-  Define $M = \{x \mid x \in \pow(X)$ and $\xi \in x\}$. Define $N = \{x \mid x \in \pow(X)$ and $\xi \notin x\}$.
-  $M \cup N = \pow(X)$. $M,N$ are disjoint.
-
-  Take $Y = X \setminus \sset{\xi}{X}$. $Y \subseteq X$.
-  Let us show that $Y$ is finite and $|Y| = m$.
-    Take $f = g \upharpoonright Y$.
-    $g$ is injective. Thus $f$ is injective.
-
-    Let us show that $f[Y] \subseteq \Seq{1}{m}$.
-      $f[Y] \subseteq \Seq{1}{n}$ and $f(\gamma) = n$ for no $\gamma \in Y$.
-      Thus $f[Y] \subseteq \Seq{1}{m}$. End.
-
-    (2) $f$ is a surjection from $Y$ onto $\Seq{1}{m}$.
-    Indeed we can show that every element of $\Seq{1}{m}$ is a value of $f$.
-      Let $y \in \Seq{1}{m}$. $\Seq{1}{m} \subseteq \Seq{1}{n}$. $g$ is a surjection from $X$ onto $\Seq{1}{n}$.
-      Take $x \in X$ such that $g(x) = y$. $y \neq n$ and $x \neq \xi$. $x \in Y$ and $f(x) = g(x) = y$. End.
-  QED.
-
-
-  Let us show that $M$ and $N$ are finite and $|\pow(Y)| = |M| = |N|$.
-    We can show that there exists a bijection between $M$ and $N$.
-      Define $f(x) = x \setminus \sset{\xi}{X}$ for $x \in M$.
-  
-      We can show that $f$ is injective.
-        Let $x,y \in M$. Assume $f(x) = f(y)$. $\sset{\xi}{X} \subseteq x$ and $\sset{\xi}{X} \subseteq y$.
-        $x \setminus \sset{\xi}{X} = y \setminus \sset{\xi}{X}$. Thus $x = y$. End.
-  
-      We can show that $f[M] \subseteq N$.
-        Let $x \in M$ and $y = f(x)$. $y = x \setminus \sset{\xi}{X}$. $y \subseteq X$ and $\xi \notin y$. Thus $y \in N$. End.
-
-      (2) $f$ is a surjection from $M$ onto $N$.
-      Indeed we can show that every element of $N$ is a value of $f$.
-        Let $y \in N$ and $x = y \cup \sset{\xi}{X}$. $x \subseteq X$ and $\xi \in x$. $x \in M$. 
-        $f(x) = (y \cup \sset{\xi}{X}) \setminus \sset{\xi}{X} = y \setminus \sset{\xi}{X} = y$. End.
-    End. 
-
-    We can show that $\pow(Y) \subseteq N$.
-      Let $y \in \pow(Y)$. $y \subseteq X$ and $\xi \notin y$. $y \in N$. End.
-      
-    We can show that $N \subseteq \pow(Y)$.
-      Let $y \in N$. $\xi \notin y$. $y \subseteq Y$. $y \in \pow(Y)$. End.
-      
-
-    $\pow(Y) = N$. $\pow(Y)$ is finite. $N$ is finite and $M$ is finite.
-    Thus $|\pow(Y)| = |N| = |M|$.
-  QED.
-
-  $|\pow(Y)| = 2^{m}$. Hence $|M| = |N| = 2^{m}$. $|M| + |N| = |M \cup N| = |\pow(X)|$. Let $w = 2^{m}$.
-  $|M| + |N| = 2^{m} + 2^{m} = (1 \cdot 2^{m}) + (1 \cdot 2^{m}) = (1 + 1) \cdot 2^{m} =  2 \cdot 2^{m} = 2^{m+1} = 2^{n}$.
-  Therefore $\pow(X)$ is finite and $|\pow(X)| = 2^{n}$.
-End.
-\end{proof}
-
-\end{forthel}
-
-
 \begin{thebibliography}{plain}
-\bibitem{Wiedijk} 100 theorems
-\bibitem{Naproche} Website
+
+\bibitem{Isabelle} The Isabelle Proof Assistant. \url{https://isabelle.in.tum.de/}
+
+\bibitem{Knaster}
+B. Knaster. Un théorème sur les fonctions d'ensembles. With A. Tarski. 
+\textit{Ann. Soc. Polon. Math.} 6: 133–134, 1928.
+
+\bibitem{Naproche} The Naproche Natural Proof Checker. \url{https://naproche.github.io/}
 
 \bibitem{Rudin} Walter Rudin. \textit{Principles of Mathematical
-Analysis}.
+Analysis}. McGraw Hill, 1953.
+
+\bibitem{Russell} Bertrand Russell,
+{\em The Principles of Mathematics}, Cambridge 1903, {\S}100
+
+\bibitem{Tarski}
+Alfred Tarski. A lattice-theoretical fixpoint theorem and its applications. 
+\textit{Pacific Journal of Mathematics}. 5:2: 285–309, 1955.
+
+\bibitem{Wiedijk} Freek Wiedijk. Formalizing 100 Theorems. \url{https://www.cs.ru.nl/~freek/100/}
+
 \end{thebibliography}
 
 \end{document}
