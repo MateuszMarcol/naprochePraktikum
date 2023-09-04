@@ -25,6 +25,8 @@ spectrum reaches from recreational puzzles to undergraduate-level theorems:
 
 * set-theory - elementary set theory
 
+* 100_theorems - formalizing number systems and 10 of Wiedijk's "100 Theorems"
+
 * agatha - a logic puzzle set in "Dreadsbury Mansion"
 
 * cantor - Cantor diagonal argument
